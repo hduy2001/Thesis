@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Running Store</title>
+  <meta name="keywords" content="HTML5 Template">
+  <meta name="description" content="Running Store">
+  <meta name="author" content="p-themes">
+  <!-- Favicon -->
+  <link rel="icon" th:href="@{/images/icons/web-icon-180.png}" type='image/x-icon' sizes="180x180" />
+  <link rel="stylesheet" th:href="@{/vendor/line-awesome/line-awesome/line-awesome/css/line-awesome.min.css}">
+  <!-- Plugins CSS File -->
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <!-- Main CSS File -->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/plugins/magnific-popup/magnific-popup.css}">
+  <link rel="stylesheet" th:href="@{/css/plugins/nouislider/nouislider.css}">
+</head>
+
+<body>
+<div class="container" style="margin-top: 50px;">
+  <div class="row" style="border: 1px darkgrey solid; border-radius: 10px;width: 50%; margin: 0 auto; padding: 20px;" >
+    <div class="col-sm-12">
+      <h3>Register</h3>
+      <form th:action="@{/register}" method="post" th:object="${USER}">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" class="form-control" name="name" placeholder="Enter full name">
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" class="form-control" name="username" placeholder="Enter username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" class="form-control" name="password" placeholder="Enter password">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" class="form-control" name="email" placeholder="Enter email">
+        </div>
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="text" class="form-control" name="phoneNumber" placeholder="Enter phone number">
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" class="form-control" name="address" placeholder="Enter address">
+        </div>
+        <p style="color: red" th:text="${ERROR}"></p>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Plugins JS File -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/jquery.hoverIntent.min.js"></script>
+<script src="assets/js/jquery.waypoints.min.js"></script>
+<script src="assets/js/superfish.min.js"></script>
+<script src="assets/js/owl.carousel.min.js"></script>
+<!-- Main JS File -->
+<script src="assets/js/main.js"></script>
+</body>
+
+
+<!-- molla/Login.html  22 Nov 2019 10:04:03 GMT -->
+</html>

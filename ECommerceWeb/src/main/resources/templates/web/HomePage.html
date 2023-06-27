@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Running Store</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Running Store">
+    <meta name="author" content="p-themes">
+    <!-- Favicon -->
+    <link rel="icon" th:href="@{/images/icons/web-icon-180.png}" type='image/x-icon' sizes="180x180"/>
+    <link rel="stylesheet" th:href="@{/vendor/line-awesome/line-awesome/line-awesome/css/line-awesome.min.css}">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/plugins/owl-carousel/owl.carousel.css}">
+    <link rel="stylesheet" th:href="@{/css/plugins/magnific-popup/magnific-popup.css}">
+    <link rel="stylesheet" th:href="@{/css/plugins/jquery.countdown.css}">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/skins/skin-demo-9.css}">
+    <link rel="stylesheet" th:href="@{/css/demos/demo-9.css}">
+</head>
+
+<body>
+<div class="page-wrapper">
+    <header class="header header-6">
+        <div class="header-middle">
+            <div class="container">
+                <div class="header-left">
+                    <div class="header-search header-search-extended header-search-visible d-none d-lg-block">
+                        <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
+                        <form action="#" method="get">
+                            <div class="header-search-wrapper search-wrapper-wide">
+                                <label for="q" class="sr-only">Search</label>
+                                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+                                <input type="search" class="form-control" name="q" id="q"
+                                       placeholder="Search product ..." required>
+                            </div><!-- End .header-search-wrapper -->
+                        </form>
+                    </div><!-- End .header-search -->
+                </div>
+
+                <div class="header-right">
+                    <div class="dropdown cart-dropdown">
+                        <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" th:if="${session.USERNAME != null}">
+                            <i class="icon-user" style="font-size: 28px;"></i>
+                            <span class="wishlist-txt" th:text="${session.USERNAME}">Login</span>
+                        </div>
+                        <a class="wishlist-link" th:href="@{/login}" th:if="${session.USERNAME == null}">
+                            <span class="wishlist-txt">Log in</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" style="transform: translateX(35%); display: flex; justify-content: center; align-items: center; max-width: 170px;" th:if="${session.USERNAME != null}">
+                            <div class="dropdown-cart-products">
+                                <div class="product">
+                                    <a class="wishlist-link" th:href="@{/user/{username}(username=${session.USERNAME})}">
+                                        <span class="wishlist-txt">Edit Info</span>
+                                    </a>
+                                </div>
+
+                                <div class="product">
+                                    <a class="wishlist-link" th:href="@{/logout}" th:if="${session.USERNAME != null}">
+                                        <span class="wishlist-txt">Logout</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div><!-- End .dropdown-menu -->
+                    </div><!-- End .cart-dropdown -->
+                    <div class="dropdown cart-dropdown">
+                        <a th:href="@{/cart}" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false" data-display="static">
+                            <i class="icon-shopping-cart"></i>
+                            <span class="cart-count" th:text="${cartCount}"></span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-cart-products" th:each="item, iStat : ${cart}">
+                                <div class="product">
+                                    <div class="product-cart-details">
+                                        <h4 class="product-title" th:text="${item.name}">Duy</h4>
+                                        <span class="cart-product-info" th:text="${#strings.replace(#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT'), ',', '.')}"></span>
+                                        <h5 class="product-title" th:text="${'Quantity: '+item.quantity}"></h5>
+                                    </div><!-- End .product-cart-details -->
+
+                                    <figure class="product-image-container">
+                                        <img th:src="@{${'/images/products/' + item.image}}" alt="product">
+                                    </figure>
+                                    <a href="#" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
+                                </div><!-- End .product -->
+                            </div><!-- End .cart-product -->
+
+                            <div class="dropdown-cart-total">
+                                <span>Total</span>
+
+                                <span class="cart-total-price" th:text="${#strings.replace(#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT'), ',', '.')}"></span>
+                            </div><!-- End .dropdown-cart-total -->
+
+                            <div class="col border-end  d-flex justify-content-center align-items-center">
+                                <a th:href="@{/cart}" class="btn btn-primary" style="color: #1b1e21">View Cart</a>
+                            </div><!-- End .dropdown-cart-total -->
+                        </div><!-- End .dropdown-menu -->
+                    </div><!-- End .cart-dropdown -->
+                </div>
+            </div><!-- End .container -->
+        </div><!-- End .header-middle -->
+
+        <div class="header-bottom sticky-header">
+            <div class="container">
+                <div class="header-center">
+                    <nav class="main-nav">
+                        <ul class="menu sf-arrows">
+                            <li class="megamenu-container active">
+                                <a th:href="@{/homePage}">Home</a>
+                            </li>
+                            <li>
+                                <a th:href="@{/shopPage/{id}(id=1)}" class="sf-with-ul">Shoes</a>
+
+                                <ul>
+                                    <li>
+                                        <a th:href="@{/shopPage/{gender}/{id}(gender='Men', id=1)}" class="sf-with-ul">Men's
+                                            Shoes</a>
+
+                                        <ul>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Nike', id=1)}">Nike</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Adidas', id=1)}">Adidas</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Saucony', id=1)}">Saucony</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Altra', id=1)}">Altra</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/shopPage/{gender}/{id}(gender='Women', id=1)}"
+                                           class="sf-with-ul">Women's Shoes</a>
+
+                                        <ul>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Nike', id=1)}">Nike</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Adidas', id=1)}">Adidas</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Saucony', id=1)}">Saucony</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Altra', id=1)}">Altra</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/shopPage/{id}(id=2)}">GPS Watches</a>
+                            </li>
+                            <li>
+                                <a class="sf-with-ul">Accessories</a>
+
+                                <ul>
+                                    <li><a th:href="@{/shopPage/{id}(id=3)}">Bone-conduction earphones</a></li>
+                                    <li><a th:href="@{/shopPage/{id}(id=5)}">Running socks</a></li>
+                                    <li><a th:href="@{/shopPage/{id}(id=4)}">Running hat</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/shopPage/{id}(id=6)}" class="sf-with-ul">Clothes</a>
+
+                                <ul>
+                                    <li>
+                                        <a th:href="@{/shopPage/{gender}/{id}(gender='Men', id=6)}" class="sf-with-ul">Men's
+                                            Clothes</a>
+
+                                        <ul>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='T8', id=6)}">T8</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Nike', id=6)}">Nike</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Adidas', id=6)}">Adidas</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/shopPage/{gender}/{id}(gender='Women', id=6)}"
+                                           class="sf-with-ul">Women's Clothes</a>
+
+                                        <ul>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='T8', id=6)}">T8</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Nike', id=6)}">Nike</a>
+                                            </li>
+                                            <li>
+                                                <a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Adidas', id=6)}">Adidas</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/shopPage/{id}(id=7)}">Nutrition</a>
+                            </li>
+                        </ul><!-- End .menu -->
+                    </nav><!-- End .main-nav -->
+
+                    <button class="mobile-menu-toggler">
+                        <span class="sr-only">Toggle mobile menu</span>
+                        <i class="icon-bars"></i>
+                    </button>
+                </div><!-- End .header-left -->
+            </div><!-- End .container -->
+        </div><!-- End .header-bottom -->
+    </header><!-- End .header -->
+
+    <main class="main">
+        <div class="intro-section">
+            <div class="intro-section-slider">
+                <div class="container">
+                    <div class="intro-slider-container slider-container-ratio mb-0">
+                        <div class="intro-slider owl-carousel owl-simple owl-light" data-toggle="owl"
+                             data-owl-options='{
+                                    "nav": false,
+                                    "dots": true,
+                                    "responsive": {
+                                        "1200": {
+                                            "nav": true,
+                                            "dots": false
+                                        }
+                                    }
+                                }'>
+                            <div class="intro-slide">
+                                <figure class="slide-image">
+                                    <picture>
+                                        <source media="(max-width: 480px)"
+                                                th:attr="srcset=|@{/images/slider/shokz-open-run-480w.png}|">
+                                        <img width="480" th:src="@{/images/slider/shokz-open-run.png}" alt="Image Desc">
+                                    </picture>
+                                </figure><!-- End .slide-image -->
+                            </div><!-- End .intro-slide -->
+
+                            <div class="intro-slide">
+                                <figure class="slide-image">
+                                    <picture>
+                                        <source media="(max-width: 480px)"
+                                                th:attr="srcset=|@{/images/slider/coros-pace-2-480w.png}|">
+                                        <img src="static/images/slider/coros-pace-2.png" width="480"
+                                             th:src="@{/images/slider/coros-pace-2.png}" alt="Image Desc">
+                                    </picture>
+                                </figure><!-- End .slide-image -->
+                            </div><!-- End .intro-slide -->
+
+                            <div class="intro-slide">
+                                <figure class="slide-image">
+                                    <picture>
+                                        <source media="(max-width: 480px)"
+                                                th:attr="srcset=|@{/images/slider/maurten-gel-480w.png}|">
+                                        <img src="@{/images/slider/maurten-gel.png}" width="480"
+                                             th:src="@{/images/slider/maurten-gel.png}" alt="Image Desc">
+                                    </picture>
+                                </figure><!-- End .slide-image -->
+                            </div><!-- End .intro-slide -->
+
+                            <div class="intro-slide">
+                                <figure class="slide-image">
+                                    <picture>
+                                        <source media="(max-width: 480px)"
+                                                th:attr="srcset=|@{/images/slider/clothes-480w.png}|">
+                                        <img src="@{/images/slider/clothes.png}" width="480"
+                                             th:src="@{/images/slider/clothes.png}" alt="Image Desc">
+                                    </picture>
+                                </figure><!-- End .slide-image -->
+                            </div><!-- End .intro-slide -->
+
+                            <div class="intro-slide">
+                                <figure class="slide-image">
+                                    <picture>
+                                        <source media="(max-width: 480px)"
+                                                th:attr="srcset=|@{/images/slider/saucony-elite-480w.png}|">
+                                        <img src="@{/images/slider/saucony-elite.png}" width="480"
+                                             th:src="@{/images/slider/saucony-elite.png}" alt="Image Desc">
+                                    </picture>
+                                </figure><!-- End .slide-image -->
+                            </div><!-- End .intro-slide -->
+                        </div><!-- End .intro-slider owl-carousel owl-simple -->
+                        <span class="slider-loader"></span><!-- End .slider-loader -->
+                    </div><!-- End .intro-slider-container -->
+                </div><!-- End .container -->
+            </div><!-- End .intro-section-slider -->
+        </div><!-- End .intro-section -->
+
+        <div class="pt-3 pb-3">
+            <div class="container">
+                <div class="owl-carousel mt-4 mb-3 owl-simple" data-toggle="owl"
+                     data-owl-options='{
+                            "nav": false,
+                            "dots": false,
+                            "margin": 30,
+                            "loop": false,
+                            "responsive": {
+                                "0": {
+                                    "items":2
+                                },
+                                "420": {
+                                    "items":3
+                                },
+                                "600": {
+                                    "items":4
+                                },
+                                "900": {
+                                    "items":5
+                                },
+                                "1024": {
+                                    "items":6
+                                }
+                            }
+                        }' style="">
+                    <a href="#" class="brand">
+                        <img th:src="@{/images/brands/nike.jpeg}" alt="Nike">
+                    </a>
+
+                    <a href="#" class="brand">
+                        <img th:src="@{/images/brands/altra.jpg}" alt="Altra">
+                    </a>
+
+                    <a href="#" class="brand">
+                        <img th:src="@{/images/brands/adidas.jpg}" alt="Adidas">
+                    </a>
+
+                    <a href="#" class="brand">
+                        <img th:src="@{/images/brands/coros.jpg}" alt="Coros">
+                    </a>
+
+                    <a href="#" class="brand">
+                        <img th:src="@{/images/brands/saucony.png}" alt="Saucony">
+                    </a>
+
+                    <a href="#" class="brand">
+                        <img th:src="@{/images/brands/T8.png}" alt="T8">
+                    </a>
+
+                    <a href="#" class="brand">
+                        <img th:src="@{/images/brands/shokz.png}" alt="Shokz">
+                    </a>
+                </div><!-- End .owl-carousel -->
+            </div><!-- End .container -->
+        </div><!-- End .bg-lighter -->
+
+        <div class="bg-lighter pt-6">
+            <div class="container">
+                <div class="heading heading-flex mb-3">
+                    <div class="heading-left">
+                        <h2 class="title">Trending Now</h2><!-- End .title -->
+                    </div><!-- End .heading-left -->
+
+                    <div class="heading-right">
+                        <ul class="nav nav-pills nav-border-anim justify-content-center" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="trending-women-link" data-toggle="tab"
+                                   href="#trending-women-tab" role="tab" aria-controls="trending-women-tab"
+                                   aria-selected="true">Women</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="trending-men-link" data-toggle="tab" href="#trending-men-tab"
+                                   role="tab" aria-controls="trending-men-tab" aria-selected="false">Men</a>
+                            </li>
+                        </ul>
+                    </div><!-- End .heading-right -->
+                </div><!-- End .heading -->
+
+                <div class="tab-content tab-content-carousel">
+                    <div class="tab-pane p-0 fade show active" id="trending-women-tab" role="tabpanel"
+                         aria-labelledby="trending-women-link">
+                        <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow"
+                             data-toggle="owl"
+                             data-owl-options='{
+                                    "nav": false,
+                                    "dots": true,
+                                    "margin": 20,
+                                    "loop": false,
+                                    "responsive": {
+                                        "0": {
+                                            "items":2
+                                        },
+                                        "480": {
+                                            "items":2
+                                        },
+                                        "768": {
+                                            "items":3
+                                        },
+                                        "992": {
+                                            "items":4
+                                        },
+                                        "1200": {
+                                            "items":4,
+                                            "dots": false
+                                        }
+                                    }
+                                }'>
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <a href="product.html">
+                                        <img th:src="@{/images/homepage/t8-women-plat.png}" alt="Product image"
+                                             class="product-image">
+                                        <img th:src="@{/images/homepage/t8-women-plat-demo.png}" alt="Product image"
+                                             class="product-image-hover">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                           title="Quick view"><span>Quick view</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="product.html">T8 Iced Tee - Women</a></h3>
+                                    <!-- End .product-title -->
+                                    <div class="product-price">
+                                        $19.99
+                                    </div><!-- End .product-price -->
+
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 100%;"></div>
+                                            <!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 196 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+
+                                    <div class="product-nav product-nav-thumbs">
+                                        <a href="#" class="active">
+                                            <img th:src="@{/images/homepage/t8-women-plat-thumb.png}"
+                                                 alt="product desc">
+                                        </a>
+                                        <a href="#">
+                                            <img th:src="@{/images/homepage/t8-women-blueberry-thumb.png}"
+                                                 alt="product desc">
+                                        </a>
+                                        <a href="#">
+                                            <img th:src="@{/images/homepage/t8-women-stormGrey-thumb.png}"
+                                                 alt="product desc">
+                                        </a>
+                                    </div><!-- End .product-nav -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <a href="product.html">
+                                        <img th:src="@{/images/homepage/coros-pace-2-navy.png}" alt="Product image"
+                                             class="product-image">
+                                        <img th:src="@{/images/homepage/coros-pace-2-navy-demo.png}" alt="Product image"
+                                             class="product-image-hover">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                           title="Quick view"><span>Quick view</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="product.html">Coros Pace 2 - Navy</a></h3>
+                                    <!-- End .product-title -->
+                                    <div class="product-price">
+                                        $24.99
+                                    </div><!-- End .product-price -->
+
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 100%;"></div>
+                                            <!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 200 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <span class="product-label label-sale">sale</span>
+                                    <a href="product.html">
+                                        <img th:src="@{/images/homepage/t8-women-sherpa-shorts-black.png}"
+                                             alt="Product image" class="product-image">
+                                        <img th:src="@{/images/homepage/t8-women-sherpa-shorts-black-demo.png}"
+                                             alt="Product image" class="product-image-hover">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                           title="Quick view"><span>Quick view</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="product.html">T8 Sherpa Shorts - Women</a></h3>
+                                    <!-- End .product-title -->
+                                    <div class="product-price">
+                                        <span class="new-price">Now $7.99</span>
+                                        <span class="old-price">Was $12.99</span>
+                                    </div><!-- End .product-price -->
+
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 85%;"></div><!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 130 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <a href="product.html">
+                                        <img th:src="@{/images/homepage/women-nike-pegasus39.png}" alt="Product image"
+                                             class="product-image">
+                                        <img th:src="@{/images/homepage/women-nike-pegasus39-demo.png}"
+                                             alt="Product image" class="product-image-hover">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                           title="Quick view"><span>Quick view</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="product.html">Nike pegasus 39 - Women</a></h3>
+                                    <!-- End .product-title -->
+                                    <div class="product-price">
+                                        $17.99
+                                    </div><!-- End .product-price -->
+
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 90%;"></div><!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 123 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+
+                                    <div class="product-nav product-nav-thumbs">
+                                        <a href="#" class="active">
+                                            <img th:src="@{/images/homepage/women-nike-pegasus39-FuchsiaDream-thumb.png}"
+                                                 alt="product desc">
+                                        </a>
+                                        <a href="#">
+                                            <img th:src="@{/images/homepage/women-nike-pegasus39-White-thumb.png}"
+                                                 alt="product desc">
+                                        </a>
+                                    </div><!-- End .product-nav -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+                        </div><!-- End .owl-carousel -->
+                    </div><!-- .End .tab-pane -->
+                    <div class="tab-pane p-0 fade" id="trending-men-tab" role="tabpanel"
+                         aria-labelledby="trending-men-link">
+                        <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow"
+                             data-toggle="owl"
+                             data-owl-options='{
+                                    "nav": false,
+                                    "dots": true,
+                                    "margin": 20,
+                                    "loop": false,
+                                    "responsive": {
+                                        "0": {
+                                            "items":2
+                                        },
+                                        "480": {
+                                            "items":2
+                                        },
+                                        "768": {
+                                            "items":3
+                                        },
+                                        "992": {
+                                            "items":4
+                                        },
+                                        "1200": {
+                                            "items":4,
+                                            "dots": false
+                                        }
+                                    }
+                                }'>
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <a href="product.html">
+                                        <img th:src="@{/images/homepage/men-t8-ice-tee-blueberry.png}"
+                                             alt="Product image" class="product-image">
+                                        <img th:src="@{/images/homepage/men-t8-ice-tee-blueberry-demo.png}"
+                                             alt="Product image" class="product-image-hover">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                           title="Quick view"><span>Quick view</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="product.html">T8 Iced Tee - Men</a></h3>
+                                    <!-- End .product-title -->
+                                    <div class="product-price">
+                                        $19.99
+                                    </div><!-- End .product-price -->
+
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 100%;"></div>
+                                            <!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 100 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+
+                                    <div class="product-nav product-nav-thumbs">
+                                        <a href="#" class="active">
+                                            <img th:src="@{/images/homepage/men-t8-ice-tee-blueberry-thumb.png}"
+                                                 alt="product desc">
+                                        </a>
+                                        <a href="#">
+                                            <img th:src="@{/images/homepage/men-t8-ice-tee-black-thumb.png}"
+                                                 alt="product desc">
+                                        </a>
+                                    </div><!-- End .product-nav -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <a href="product.html">
+                                        <img th:src="@{/images/homepage/coros-pace-2-navy.png}" alt="Product image"
+                                             class="product-image">
+                                        <img th:src="@{/images/homepage/coros-pace-2-navy-demo.png}" alt="Product image"
+                                             class="product-image-hover">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                           title="Quick view"><span>Quick view</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="product.html">Coros Pace 2 - Navy</a></h3>
+                                    <!-- End .product-title -->
+                                    <div class="product-price">
+                                        $24.99
+                                    </div><!-- End .product-price -->
+
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 100%;"></div>
+                                            <!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 200 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <span class="product-label label-sale">sale</span>
+                                    <a href="product.html">
+                                        <img th:src="@{/images/homepage/men-t8-sherpa-short.png}" alt="Product image"
+                                             class="product-image">
+                                        <img th:src="@{/images/homepage/men-t8-sherpa-short-demo.png}"
+                                             alt="Product image" class="product-image-hover">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                           title="Quick view"><span>Quick view</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="product.html">T8 Sherpa Shorts - Men</a></h3>
+                                    <!-- End .product-title -->
+                                    <div class="product-price">
+                                        <span class="new-price">Now $7.99</span>
+                                        <span class="old-price">Was $12.99</span>
+                                    </div><!-- End .product-price -->
+
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 95%;"></div><!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 180 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+
+                            <div class="product product-7 text-center">
+                                <figure class="product-media">
+                                    <a href="product.html">
+                                        <img th:src="@{/images/homepage/men-saucony-endorphin-elite.png}"
+                                             alt="Product image" class="product-image">
+                                        <img th:src="@{/images/homepage/men-saucony-endorphin-elite-demo.png}"
+                                             alt="Product image" class="product-image-hover">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                           title="Quick view"><span>Quick view</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <h3 class="product-title"><a href="product.html">Saucony Endorphin Elite - Men</a>
+                                    </h3><!-- End .product-title -->
+                                    <div class="product-price">
+                                        $17.99
+                                    </div><!-- End .product-price -->
+
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 100%;"></div>
+                                            <!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 72 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+                        </div><!-- End .owl-carousel -->
+                    </div><!-- .End .tab-pane -->
+                </div><!-- End .tab-content -->
+            </div><!-- End .container -->
+        </div>
+
+        <div class="container featured mt-4 pb-2">
+            <div class="heading heading-flex mb-3">
+                <div class="heading-left">
+                    <h2 class="title">Featured Running Shoes</h2><!-- End .title -->
+                </div><!-- End .heading-left -->
+
+                <div class="heading-right">
+                    <ul class="nav nav-pills nav-border-anim justify-content-center" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="featured-women-link" data-toggle="tab"
+                               href="#featured-women-tab" role="tab" aria-controls="featured-women-tab"
+                               aria-selected="true">Women</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="featured-men-link" data-toggle="tab" href="#featured-men-tab"
+                               role="tab" aria-controls="featured-men-tab" aria-selected="true">Men</a>
+                        </li>
+                    </ul>
+                </div><!-- End .heading-right -->
+            </div><!-- End .heading -->
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="banner banner-overlay product-banner">
+                        <a href="#">
+                            <img th:src="@{/images/homepage/shoes-banner.png}" alt="shoes-banner">
+                        </a>
+                        <div class="banner-content">
+                            <div class="banner-top">
+                                <div class="banner-title text-white text-center">
+                                    <i class="la la-star-o"></i>
+                                    <h3 class="text-white">Our Experts<br>Recommend</h3>
+                                </div>
+                            </div>
+                            <div class="banner-bottom">
+                                <div class="product-cat">
+                                    <h4 class="text-white">Sale</h4>
+                                </div>
+                                <div class="product-price">
+                                    <h4 class="text-white">$29.99</h4>
+                                </div>
+                                <div class="product-txt">
+                                    <p class="text-white">Wedge-heel sandals</p>
+                                </div>
+                                <a href="#" class="btn btn-outline-white banner-link">Shop Now</a>
+                            </div>
+                        </div>
+                    </div><!-- End .banner banner-overlay -->
+                </div><!-- End .col-lg-3 -->
+
+                <div class="col-lg-9">
+                    <div class="tab-content tab-content-carousel">
+                        <div class="tab-pane p-0 fade show active" id="featured-women-tab" role="tabpanel"
+                             aria-labelledby="featured-women-link">
+                            <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow"
+                                 data-toggle="owl"
+                                 data-owl-options='{
+                                        "nav": false,
+                                        "dots": true,
+                                        "margin": 20,
+                                        "loop": false,
+                                        "responsive": {
+                                            "0": {
+                                                "items":2
+                                            },
+                                            "480": {
+                                                "items":2
+                                            },
+                                            "768": {
+                                                "items":3
+                                            },
+                                            "992": {
+                                                "items":3,
+                                                "nav": true,
+                                                "dots": false
+                                            }
+                                        }
+                                    }'>
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/women-nike-pegasus39.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/women-nike-pegasus39-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Nike pegasus 39 - Women</a>
+                                        </h3><!-- End .product-title -->
+                                        <div class="product-price">
+                                            $17.99
+                                        </div><!-- End .product-price -->
+
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 90%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 123 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+
+                                        <div class="product-nav product-nav-thumbs">
+                                            <a href="#" class="active">
+                                                <img th:src="@{/images/homepage/women-nike-pegasus39-FuchsiaDream-thumb.png}"
+                                                     alt="product desc">
+                                            </a>
+                                            <a href="#">
+                                                <img th:src="@{/images/homepage/women-nike-pegasus39-White-thumb.png}"
+                                                     alt="product desc">
+                                            </a>
+                                        </div><!-- End .product-nav -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+
+                                <div class="product product-7">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/women-altra-rivera3.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/women-altra-rivera3-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Altra Rivera 3 - Women</a></h3>
+                                        <!-- End .product-title -->
+                                        <div class="product-price">
+                                            $12.99
+                                        </div><!-- End .product-price -->
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 60%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 4 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+
+                                <div class="product product-7">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/women-adidas-ultraboost-light.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/women-adidas-ultraboost-light-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Adidas Ultraboost Light -
+                                            Women</a></h3><!-- End .product-title -->
+                                        <div class="product-price">
+                                            $9.99
+                                        </div><!-- End .product-price -->
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 80%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 2 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+
+                                <div class="product product-7">
+                                    <figure class="product-media">
+                                        <span class="product-label label-sale">30% off</span>
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/women-saucony-triumph20.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/women-saucony-triumph20-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Saucony Triumph 20 - Women</a>
+                                        </h3><!-- End .product-title -->
+                                        <div class="product-price">
+                                            <span class="new-price">Now $19.99</span>
+                                            <span class="old-price">Was $29.99</span>
+                                        </div><!-- End .product-price -->
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 100%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 6 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+                            </div><!-- End .owl-carousel -->
+                        </div><!-- .End .tab-pane -->
+                        <div class="tab-pane p-0 fade" id="featured-men-tab" role="tabpanel"
+                             aria-labelledby="featured-men-link">
+                            <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow"
+                                 data-toggle="owl"
+                                 data-owl-options='{
+                                        "nav": false,
+                                        "dots": true,
+                                        "margin": 20,
+                                        "loop": false,
+                                        "responsive": {
+                                            "0": {
+                                                "items":1
+                                            },
+                                            "480": {
+                                                "items":2
+                                            },
+                                            "768": {
+                                                "items":3
+                                            },
+                                            "992": {
+                                                "items":3,
+                                                "dots": false
+                                            }
+                                        }
+                                    }'>
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/men-saucony-endorphin-elite.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/men-saucony-endorphin-elite-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Saucony Endorphin Elite -
+                                            Men</a></h3><!-- End .product-title -->
+                                        <div class="product-price">
+                                            $17.99
+                                        </div><!-- End .product-price -->
+
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 90%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 123 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+
+                                <div class="product product-7">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/men-adidas-ultraboost-light.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/men-adidas-ultraboost-light-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Adidas Ultraboost Light -
+                                            Men</a></h3><!-- End .product-title -->
+                                        <div class="product-price">
+                                            $12.99
+                                        </div><!-- End .product-price -->
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 60%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 4 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+
+                                <div class="product product-7">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/men-nike-alphafly-2.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/men-nike-alphafly2-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Nike Alphafly 2 - Men</a></h3>
+                                        <!-- End .product-title -->
+                                        <div class="product-price">
+                                            $9.99
+                                        </div><!-- End .product-price -->
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 80%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 2 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+
+                                <div class="product product-7">
+                                    <figure class="product-media">
+                                        <span class="product-label label-sale">30% off</span>
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/men-altra-via-olympus.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/men-altra-via-olympus-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Altra Via Olympus - Men</a>
+                                        </h3><!-- End .product-title -->
+                                        <div class="product-price">
+                                            <span class="new-price">Now $19.99</span>
+                                            <span class="old-price">Was $29.99</span>
+                                        </div><!-- End .product-price -->
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 100%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 6 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+                            </div><!-- End .owl-carousel -->
+                        </div><!-- .End .tab-pane -->
+                    </div><!-- End .tab-content -->
+                </div><!-- End .col-lg-9 -->
+            </div><!-- End .row -->
+        </div><!-- End .container -->
+
+        <div class="container">
+            <hr class="mt-3 mb-4">
+        </div><!-- End .container -->
+
+        <div class="container pb-2">
+            <div class="heading heading-flex mb-3">
+                <div class="heading-left">
+                    <h2 class="title">Featured Running Accessories</h2><!-- End .title -->
+                </div><!-- End .heading-left -->
+            </div><!-- End .heading -->
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="banner banner-overlay product-banner">
+                        <a href="#">
+                            <img th:src="@{/images/homepage/accessories-banner.png}" alt="accessories-banner">
+                        </a>
+                        <div class="banner-content">
+                            <div class="banner-bottom">
+                                <div class="product-cat">
+                                    <h4 class="text-white">Sale</h4>
+                                </div>
+                                <div class="product-price">
+                                    <h4 class="text-white">$129.99</h4>
+                                </div>
+                                <div class="product-txt">
+                                    <p class="text-white">Cross Body Bag</p>
+                                </div>
+                                <a href="#" class="btn btn-outline-white banner-link">Shop Now</a>
+                            </div>
+                        </div>
+                    </div><!-- End .banner banner-overlay -->
+                </div><!-- End .col-lg-3 -->
+
+                <div class="col-lg-9">
+                    <div class="tab-content tab-content-carousel">
+                        <div class="tab-pane p-0 fade show active" id="bags-women-tab" role="tabpanel"
+                             aria-labelledby="bags-women-link">
+                            <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow"
+                                 data-toggle="owl"
+                                 data-owl-options='{
+                                        "nav": false,
+                                        "dots": true,
+                                        "margin": 20,
+                                        "loop": false,
+                                        "responsive": {
+                                            "0": {
+                                                "items":2
+                                            },
+                                            "480": {
+                                                "items":2
+                                            },
+                                            "768": {
+                                                "items":3
+                                            },
+                                            "1200": {
+                                                "items":3,
+                                                "nav": true,
+                                                "dots": false
+                                            }
+                                        }
+                                    }'>
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/shokz-open-run-black.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/shokz-open-run-black-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Shokz Open Run</a></h3>
+                                        <!-- End .product-title -->
+                                        <div class="product-price">
+                                            $14.99
+                                        </div><!-- End .product-price -->
+
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 80%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 3 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                        <div class="product-nav product-nav-thumbs">
+                                            <a href="#" class="active">
+                                                <img th:src="@{/images/homepage/shokz-open-run-black-thumb.png}"
+                                                     alt="product desc">
+                                            </a>
+                                            <a href="#">
+                                                <img th:src="@{/images/homepage/shokz-open-run-pink-thumb.png}"
+                                                     alt="product desc">
+                                            </a>
+                                            <a href="#">
+                                                <img th:src="@{/images/homepage/shokz-open-run-red-thumb.png}"
+                                                     alt="product desc">
+                                            </a>
+                                        </div><!-- End .product-nav -->
+                                    </div><!-- End .product-body -->
+                                </div>
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/maurten-gel-100.png}" alt="Product image"
+                                                 class="product-image">
+                                            <img th:src="@{/images/homepage/maurten-gel-100-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Maurten Gel 100</a></h3>
+                                        <!-- End .product-title -->
+                                        <div class="product-price">
+                                            $9.99
+                                        </div><!-- End .product-price -->
+
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 97%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 1000 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media">
+                                        <a href="product.html">
+                                            <img th:src="@{/images/homepage/injinji-toesocks-mint.png}"
+                                                 alt="Product image" class="product-image">
+                                            <img th:src="@{/images/homepage/injinji-toesocks-mint-demo.png}"
+                                                 alt="Product image" class="product-image-hover">
+                                        </a>
+
+                                        <div class="product-action-vertical">
+                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
+                                               title="Quick view"><span>Quick view</span></a>
+                                        </div><!-- End .product-action-vertical -->
+
+                                        <div class="product-action">
+                                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a href="product.html">Injinji Toesocks</a></h3>
+                                        <!-- End .product-title -->
+                                        <div class="product-price">
+                                            $14.99
+                                        </div><!-- End .product-price -->
+
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: 80%;"></div>
+                                                <!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( 3 Reviews )</span>
+                                        </div><!-- End .rating-container -->
+                                        <div class="product-nav product-nav-thumbs">
+                                            <a href="#" class="active">
+                                                <img th:src="@{/images/homepage/injinji-toesocks-mint-thumb.png}"
+                                                     alt="product desc">
+                                            </a>
+                                            <a href="#">
+                                                <img th:src="@{/images/homepage/injinji-toesocks-black-thumb.png}"
+                                                     alt="product desc">
+                                            </a>
+                                            <a href="#">
+                                                <img th:src="@{/images/homepage/injinji-toesocks-yellow-thumb.png}"
+                                                     alt="product desc">
+                                            </a>
+                                        </div><!-- End .product-nav -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+                            </div><!-- End .owl-carousel -->
+                        </div><!-- .End .tab-pane -->
+                    </div><!-- End .tab-content -->
+                </div>
+            </div>
+        </div><!-- End .container -->
+
+        <div class="container">
+            <hr class="mt-3 mt-xl-1 mb-0">
+        </div><!-- End .container -->
+
+        <div class="cta pt-4 pt-lg-6 pb-5 pb-lg-7 mb-0">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-10 col-md-8 col-lg-6">
+                        <div class="cta-heading text-center">
+                            <h3 class="cta-title">Sign Up for new running accessories</h3><!-- End .cta-title -->
+                            <p class="cta-desc">and receive <span class="font-weight-normal">$20 coupon</span> for first
+                                shopping</p><!-- End .cta-desc -->
+                        </div><!-- End .text-center -->
+
+                        <form action="#">
+                            <div class="input-group">
+                                <input type="email" class="form-control" placeholder="Enter your Email Address"
+                                       aria-label="Email Adress" required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit" title="Sing up"><i
+                                            class="icon-long-arrow-right"></i></button>
+                                </div><!-- .End .input-group-append -->
+                            </div><!-- .End .input-group -->
+                        </form>
+                    </div><!-- End .col-sm-10 col-md-8 col-lg-6 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .cta -->
+    </main><!-- End .main -->
+
+    <footer class="footer footer-2">
+        <div class="footer-middle">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="widget widget-about">
+                            <img th:src="@{/images/icons/footer-logo.png}" class="footer-logo" alt="Footer Logo"
+                                 height="80">
+                            <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna
+                                eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor,
+                                facilisis luctus, metus. </p>
+
+                            <div class="widget-about-info">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-4">
+                                        <span class="widget-about-title">Got Question? Call us 24/7</span>
+                                        <a href="tel:123456789">+84 918152757</a>
+                                    </div><!-- End .col-sm-6 -->
+                                    <div class="col-sm-6 col-md-8">
+                                        <span class="widget-about-title">Payment Method</span>
+                                        <figure class="footer-payments">
+                                            <img th:src="@{/images/payments.png}" alt="Payment methods" width="272"
+                                                 height="20">
+                                        </figure><!-- End .footer-payments -->
+                                    </div><!-- End .col-sm-6 -->
+                                </div><!-- End .row -->
+                            </div><!-- End .widget-about-info -->
+                        </div><!-- End .widget about-widget -->
+                    </div><!-- End .col-sm-12 col-lg-3 -->
+
+                    <div class="col-sm-4 col-lg-2">
+                        <div class="widget">
+                            <h4 class="widget-title">Information</h4><!-- End .widget-title -->
+
+                            <ul class="widget-list">
+                                <li><a href="about.html">About Running Store</a></li>
+                                <li><a href="#">How to shop on Running Store</a></li>
+                                <li><a href="faq.html">FAQ</a></li>
+                                <li><a href="contact.html">Contact us</a></li>
+                                <li><a href="Login.html">Log in</a></li>
+                            </ul><!-- End .widget-list -->
+                        </div><!-- End .widget -->
+                    </div><!-- End .col-sm-4 col-lg-3 -->
+
+                    <div class="col-sm-4 col-lg-2">
+                        <div class="widget">
+                            <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+                            <ul class="widget-list">
+                                <li><a href="#">Payment Methods</a></li>
+                                <li><a href="#">Money-back guarantee!</a></li>
+                                <li><a href="#">Returns</a></li>
+                                <li><a href="#">Shipping</a></li>
+                                <li><a href="#">Terms and conditions</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                            </ul><!-- End .widget-list -->
+                        </div><!-- End .widget -->
+                    </div><!-- End .col-sm-4 col-lg-3 -->
+
+                    <div class="col-sm-4 col-lg-2">
+                        <div class="widget">
+                            <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+                            <ul class="widget-list">
+                                <li><a href="#">Sign In</a></li>
+                                <li><a href="cart.html">View Cart</a></li>
+                                <li><a href="#">My Wishlist</a></li>
+                                <li><a href="#">Track My Order</a></li>
+                                <li><a href="#">Help</a></li>
+                            </ul><!-- End .widget-list -->
+                        </div><!-- End .widget -->
+                    </div><!-- End .col-sm-64 col-lg-3 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .footer-middle -->
+    </footer><!-- End .footer -->
+</div><!-- End .page-wrapper -->
+<button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+<div class="mobile-menu-container">
+    <div class="mobile-menu-wrapper">
+        <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+        <form action="#" method="get" class="mobile-search">
+            <label for="mobile-search" class="sr-only">Search</label>
+            <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search in..."
+                   required>
+            <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+        </form>
+
+        <nav class="mobile-nav">
+            <ul class="mobile-menu">
+                <li class="active">
+                    <a href="Homepage.jsp">Home</a>
+                </li>
+                <li>
+                    <a href="Shoes-page.jsp">Shoes</a>
+                    <ul>
+                        <li><a href="ShoesPageMen.html">Men's shoes</a></li>
+                        <li><a href="ShoesPageWomen.html">Women's shoes</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="sf-with-ul">GPS Watches</a>
+                    <ul>
+                        <li><a href="#">Coros</a></li>
+                        <li><a href="#">Garmin</a></li>
+                        <li><a href="#"><span>Polar<span class="tip tip-new">New</span></span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Accessories</a>
+                    <ul>
+                        <li>
+                            <a href="about.html">About</a>
+
+                            <ul>
+                                <li><a href="about.html">About 01</a></li>
+                                <li><a href="about-2.html">About 02</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="contact.html">Contact</a>
+
+                            <ul>
+                                <li><a href="contact.html">Contact 01</a></li>
+                                <li><a href="contact-2.html">Contact 02</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="Login.html">Login</a></li>
+                        <li><a href="faq.html">FAQs</a></li>
+                        <li><a href="404.html">Error 404</a></li>
+                        <li><a href="coming-soon.html">Coming Soon</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="elements-list.html">Nutrition</a>
+                    <ul>
+                        <li><a href="elements-products.html">Products</a></li>
+                        <li><a href="elements-typography.html">Typography</a></li>
+                        <li><a href="elements-titles.html">Titles</a></li>
+                        <li><a href="elements-banners.html">Banners</a></li>
+                        <li><a href="elements-product-category.html">Product Category</a></li>
+                        <li><a href="elements-video-banners.html">Video Banners</a></li>
+                        <li><a href="elements-buttons.html">Buttons</a></li>
+                        <li><a href="elements-accordions.html">Accordions</a></li>
+                        <li><a href="elements-tabs.html">Tabs</a></li>
+                        <li><a href="elements-testimonials.html">Testimonials</a></li>
+                        <li><a href="elements-blog-posts.html">Blog Posts</a></li>
+                        <li><a href="elements-portfolio.html">Portfolio</a></li>
+                        <li><a href="elements-cta.html">Call to Action</a></li>
+                        <li><a href="elements-icon-boxes.html">Icon Boxes</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav><!-- End .mobile-nav -->
+
+        <div class="social-icons">
+            <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+            <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+            <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+            <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+        </div><!-- End .social-icons -->
+    </div><!-- End .mobile-menu-wrapper -->
+</div><!-- End .mobile-menu-container -->
+
+<!-- Sign in / Register Modal -->
+<div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="icon-close"></i></span>
+                </button>
+
+                <div class="form-box">
+                    <div class="form-tab">
+                        <ul class="nav nav-pills nav-fill nav-border-anim" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="signin-tab" data-toggle="tab" href="#signin" role="tab"
+                                   aria-controls="signin" aria-selected="true">Sign In</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab"
+                                   aria-controls="register" aria-selected="false">Register</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="tab-content-5">
+                            <div class="tab-pane fade show active" id="signin" role="tabpanel"
+                                 aria-labelledby="signin-tab">
+                                <form action="#">
+                                    <div class="form-group">
+                                        <label for="singin-email">Username or email address *</label>
+                                        <input type="text" class="form-control" id="singin-email" name="singin-email"
+                                               required>
+                                    </div><!-- End .form-group -->
+
+                                    <div class="form-group">
+                                        <label for="singin-password">Password *</label>
+                                        <input type="password" class="form-control" id="singin-password"
+                                               name="singin-password" required>
+                                    </div><!-- End .form-group -->
+
+                                    <div class="form-footer">
+                                        <button type="submit" class="btn btn-outline-primary-2">
+                                            <span>LOG IN</span>
+                                            <i class="icon-long-arrow-right"></i>
+                                        </button>
+
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="signin-remember">
+                                            <label class="custom-control-label" for="signin-remember">Remember
+                                                Me</label>
+                                        </div><!-- End .custom-checkbox -->
+
+                                        <a href="#" class="forgot-link">Forgot Your Password?</a>
+                                    </div><!-- End .form-footer -->
+                                </form>
+                                <div class="form-choice">
+                                    <p class="text-center">or sign in with</p>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <a href="#" class="btn btn-login btn-g">
+                                                <i class="icon-google"></i>
+                                                Login With Google
+                                            </a>
+                                        </div><!-- End .col-6 -->
+                                        <div class="col-sm-6">
+                                            <a href="#" class="btn btn-login btn-f">
+                                                <i class="icon-facebook-f"></i>
+                                                Login With Facebook
+                                            </a>
+                                        </div><!-- End .col-6 -->
+                                    </div><!-- End .row -->
+                                </div><!-- End .form-choice -->
+                            </div><!-- .End .tab-pane -->
+                            <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                <form action="#">
+                                    <div class="form-group">
+                                        <label for="register-name">Full Name</label>
+                                        <input type="email" class="form-control" id="register-name"
+                                               name="register-email" required>
+                                    </div><!-- End .form-group -->
+
+                                    <div class="form-group">
+                                        <label for="register-email">Username</label>
+                                        <input type="email" class="form-control" id="register-username"
+                                               name="register-email" required>
+                                    </div><!-- End .form-group -->
+
+                                    <div class="form-group">
+                                        <label for="register-password">Password</label>
+                                        <input type="password" class="form-control" id="register-password"
+                                               name="register-password" required>
+                                    </div><!-- End .form-group -->
+
+                                    <div class="form-group">
+                                        <label for="register-email">Phone number</label>
+                                        <input type="email" class="form-control" id="register-mobile"
+                                               name="register-email" required>
+                                    </div><!-- End .form-group -->
+
+                                    <div class="form-group">
+                                        <label for="register-email">Address</label>
+                                        <input type="email" class="form-control" id="register-email"
+                                               name="register-email" required>
+                                    </div><!-- End .form-group -->
+
+                                    <div class="form-group">
+                                        <label for="register-password">Gender</label>
+                                        <input type="password" class="form-control" id="register-gender"
+                                               name="register-password" required>
+                                    </div><!-- End .form-group -->
+
+                                    <div class="form-footer">
+                                        <button type="submit" class="btn btn-outline-primary-2">
+                                            <span>SIGN UP</span>
+                                            <i class="icon-long-arrow-right"></i>
+                                        </button>
+
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="register-policy"
+                                                   required>
+                                            <label class="custom-control-label" for="register-policy">I agree to the <a
+                                                    href="#">privacy policy</a> *</label>
+                                        </div><!-- End .custom-checkbox -->
+                                    </div><!-- End .form-footer -->
+                                </form>
+                                <div class="form-choice">
+                                    <p class="text-center">or sign in with</p>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <a href="#" class="btn btn-login btn-g">
+                                                <i class="icon-google"></i>
+                                                Login With Google
+                                            </a>
+                                        </div><!-- End .col-6 -->
+                                        <div class="col-sm-6">
+                                            <a href="#" class="btn btn-login  btn-f">
+                                                <i class="icon-facebook-f"></i>
+                                                Login With Facebook
+                                            </a>
+                                        </div><!-- End .col-6 -->
+                                    </div><!-- End .row -->
+                                </div><!-- End .form-choice -->
+                            </div><!-- .End .tab-pane -->
+                        </div><!-- End .tab-content -->
+                    </div><!-- End .form-tab -->
+                </div><!-- End .form-box -->
+            </div><!-- End .modal-body -->
+        </div><!-- End .modal-content -->
+    </div><!-- End .modal-dialog -->
+</div><!-- End .modal -->
+
+<div class="container newsletter-popup-container mfp-hide" id="newsletter-popup-form">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="row no-gutters bg-white newsletter-popup-content">
+                <div class="col-xl-3-5col col-lg-7 banner-content-wrap">
+                    <div class="banner-content text-center">
+                        <img th:src="@{/images/popup/newsletter/logo-grey.png}" class="logo" alt="logo" width="120"
+                             height="45">
+                        <h2 class="banner-title">get <span>25<light>%</light></span> off</h2>
+                        <p>Subscribe to the Running Store eCommerce newsletter to receive timely updates from your
+                            favorite products.</p>
+                        <form action="#">
+                            <div class="input-group input-group-round">
+                                <input type="email" class="form-control form-control-white"
+                                       placeholder="Your Email Address" aria-label="Email Adress" required>
+                                <div class="input-group-append">
+                                    <button class="btn" type="submit"><span>go</span></button>
+                                </div><!-- .End .input-group-append -->
+                            </div><!-- .End .input-group -->
+                        </form>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="register-policy-2" required>
+                            <label class="custom-control-label" for="register-policy-2">Do not show this popup
+                                again</label>
+                        </div><!-- End .custom-checkbox -->
+                    </div>
+                </div>
+                <div class="col-xl-2-5col col-lg-5 ">
+                    <img th:src="@{/images/popup/newsletter/popup-banner.png}" class="newsletter-img" alt="newsletter">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Plugins JS File -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/jquery.hoverIntent.min.js}"></script>
+<script th:src="@{/js/jquery.waypoints.min.js}"></script>
+<script th:src="@{/js/superfish.min.js}"></script>
+<script th:src="@{/js/owl.carousel.min.js}"></script>
+<script th:src="@{/js/bootstrap-input-spinner.js}"></script>
+<script th:src="@{/js/jquery.plugin.min.js}"></script>
+<script th:src="@{/js/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/js/jquery.countdown.min.js}"></script>
+<!-- Main JS File -->
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/demos/demo-9.js}"></script>
+</body>
+
+</html>

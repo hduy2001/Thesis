@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Running Store</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Running Store">
+    <meta name="author" content="p-themes">
+    <!-- Favicon -->
+    <link rel="icon" th:href="@{/images/icons/web-icon-180.png}" type='image/x-icon' sizes="180x180" />
+    <link rel="stylesheet" th:href="@{/vendor/line-awesome/line-awesome/line-awesome/css/line-awesome.min.css}">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/plugins/magnific-popup/magnific-popup.css}">
+    <link rel="stylesheet" th:href="@{/css/plugins/nouislider/nouislider.css}">
+</head>
+
+<body>
+<div class="page-wrapper">
+    <header class="header">
+        <div class="header-bottom sticky-header">
+            <div class="container">
+                <div class="header-left">
+                    <a th:href="@{/homePage}" class="logo">
+                        <img th:src="@{/images/icons/web-logo.png}" alt="Logo" width="250" height="30">
+                    </a>
+                </div>
+                <div class="header-center">
+                    <nav class="main-nav">
+                        <ul class="menu sf-arrows">
+                            <li>
+                                <a th:href="@{/shopPage/{id}(id=1)}" class="sf-with-ul">Shoes</a>
+                                <ul>
+                                    <li>
+                                        <a th:href="@{/shopPage/{gender}/{id}(gender='Men', id=1)}" class="sf-with-ul">Men's Shoes</a>
+
+                                        <ul>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Nike', id=1)}">Nike</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Adidas', id=1)}">Adidas</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Saucony', id=1)}">Saucony</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Altra', id=1)}">Altra</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/shopPage/{gender}/{id}(gender='Women', id=1)}" class="sf-with-ul">Women's Shoes</a>
+
+                                        <ul>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Nike', id=1)}">Nike</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Adidas', id=1)}">Adidas</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Saucony', id=1)}">Saucony</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Altra', id=1)}">Altra</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/shopPage/{id}(id=2)}">GPS Watches</a>
+                            </li>
+                            <li>
+                                <a class="sf-with-ul">Accessories</a>
+
+                                <ul>
+                                    <li><a th:href="@{/shopPage/{id}(id=3)}">Bone-conduction earphones</a></li>
+                                    <li><a th:href="@{/shopPage/{id}(id=5)}">Running socks</a></li>
+                                    <li><a th:href="@{/shopPage/{id}(id=4)}">Running hat</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/shopPage/{id}(id=6)}" class="sf-with-ul">Clothes</a>
+
+                                <ul>
+                                    <li>
+                                        <a th:href="@{/shopPage/{gender}/{id}(gender='Men', id=6)}" class="sf-with-ul">Men's Clothes</a>
+
+                                        <ul>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='T8', id=6)}">T8</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Nike', id=6)}">Nike</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Men', brand='Adidas', id=6)}">Adidas</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/shopPage/{gender}/{id}(gender='Women', id=6)}" class="sf-with-ul">Women's Clothes</a>
+
+                                        <ul>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='T8', id=6)}">T8</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Nike', id=6)}">Nike</a></li>
+                                            <li><a th:href="@{/shopPage/{gender}/{brand}/{id}(gender='Women', brand='Adidas', id=6)}">Adidas</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a th:href="@{/shopPage/{id}(id=7)}">Nutrition</a>
+                            </li>
+                        </ul><!-- End .menu -->
+                    </nav><!-- End .main-nav -->
+                </div><!-- End .header-left -->
+
+                <div class="header-right">
+                    <i class="icon-user" style="font-size: 28px; padding-left: 10px;"></i>
+                    <span class="wishlist-txt" th:text="${session.USERNAME}" style="font-size: 15px;">Login</span>
+                    <div class="dropdown cart-dropdown">
+                        <a th:href="@{/cart}" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                            <i class="icon-shopping-cart"></i>
+                            <span class="cart-count" th:text="${cartCount}"></span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" >
+                            <div class="dropdown-cart-products" th:each="item, iStat : ${cart}">
+                                <div class="product">
+                                    <div class="product-cart-details">
+                                        <h4 class="product-title" th:text="${item.name}">Duy</h4>
+                                        <span class="cart-product-info" th:text="${item.price}"></span>
+                                    </div><!-- End .product-cart-details -->
+
+                                    <figure class="product-image-container">
+                                        <img th:src="@{${'/images/products/' + item.image}}" alt="product">
+                                    </figure>
+                                    <a th:href="@{/shopPage/removeItem/{index}(index=${iStat.index})}" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
+                                </div><!-- End .product -->
+                            </div><!-- End .cart-product -->
+
+                            <div class="dropdown-cart-total">
+                                <span>Total</span>
+
+                                <span class="cart-total-price" th:text="${total}"></span>
+                            </div><!-- End .dropdown-cart-total -->
+
+                            <div class="col border-end  d-flex justify-content-center align-items-center">
+                                <a th:href="@{/cart}" class="btn btn-primary">View Cart</a>
+                            </div><!-- End .dropdown-cart-total -->
+                        </div><!-- End .dropdown-menu -->
+                    </div><!-- End .cart-dropdown -->
+                </div><!-- End .header-right -->
+            </div><!-- End .container -->
+        </div><!-- End .header-middle -->
+    </header><!-- End .header -->
+    <div class="container">
+        <div class="text-center">
+            <h1>User Detail</h1>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div style="border: 1px solid black; padding: 15px;">
+                    <form th:action="@{/updateUser}" method="post" th:object="${USER}">
+                        <div class="mb-2">
+                            <label>Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="Enter username" th:field="*{username}" readonly>
+                        </div>
+                        <div class="mb-2">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" name="name" placeholder="Enter full name" th:field="*{name}">
+                        </div>
+                        <div class="mb-2">
+                            <label>Password</label>
+                            <input type="text" class="form-control" name="password" placeholder="Let it empty if you not change" th:field="*{password}">
+                        </div>
+                        <div class="mb-2">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="Enter email" th:field="*{email}">
+                        </div>
+                        <div class="mb-2">
+                            <label>Phone number</label>
+                            <input type="text" class="form-control" name="phoneNumber" placeholder="Enter phone number" th:field="*{phoneNumber}">
+                        </div>
+                        <div class="mb-2">
+                            <label>Address</label>
+                            <input type="text" class="form-control" name="address" placeholder="Enter address" th:field="*{address}">
+                        </div>
+                        <p style="color: red" th:text="${ERROR}"></p>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Đường dẫn đến các tệp JavaScript của Bootstrap -->
+<!-- Plugins JS File -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/jquery.hoverIntent.min.js"></script>
+<script src="assets/js/jquery.waypoints.min.js"></script>
+<script src="assets/js/superfish.min.js"></script>
+<script src="assets/js/owl.carousel.min.js"></script>
+<!-- Main JS File -->
+<script src="assets/js/main.js"></script>
+</body>
+
+</html>
