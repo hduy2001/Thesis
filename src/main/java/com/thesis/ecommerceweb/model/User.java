@@ -28,9 +28,16 @@ public class User implements Serializable {
     @Column(name = "address", nullable = false, length = 250)
     private String address;
 
-    @Column(name = "isConfirm")
-    private Integer isConfirm;
-    public User(String username, String password, String name, String email, String phoneNumber, String address, Integer isConfirm) {
+    @Column(name = "role")
+    private String role;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name = "is_confirm")
+    private boolean isConfirm;
+
+    public User(String username, String password, String name, String email, String phoneNumber, String address, String role, String verificationCode, boolean isConfirm) {
         super();
         this.username = username;
         this.password = password;
@@ -39,6 +46,8 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.isConfirm = isConfirm;
+        this.role = role;
+        this.verificationCode = verificationCode;
     }
 
     public User() {
