@@ -1,6 +1,7 @@
 package com.thesis.ecommerceweb.controller;
 
 
+import com.thesis.ecommerceweb.dto.UserDTO;
 import com.thesis.ecommerceweb.global.GlobalData;
 import com.thesis.ecommerceweb.model.Category;
 import com.thesis.ecommerceweb.model.Product;
@@ -10,10 +11,13 @@ import com.thesis.ecommerceweb.service.ProductService;
 import com.thesis.ecommerceweb.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
@@ -25,9 +29,15 @@ public class HomePageController {
     ProductService productService;
     @Autowired
     UserService userService;
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @GetMapping("/homePage")
-    public String homePage(Model model){
+    public String homePage(Model model, Principal principal){
+        if(principal != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+            model.addAttribute("user", userDetails);
+        }
         model.addAttribute("cart", GlobalData.cart);
         model.addAttribute("cartCount", GlobalData.cart.size());
         model.addAttribute("total", GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
@@ -82,27 +92,27 @@ public class HomePageController {
     }
 
     //Login Section:
-    @RequestMapping("/login")
+    @GetMapping("/login")
     public String showLogin(){
         return "web/Login";
     }
 
-    @PostMapping("/checkLogin")
-    public String checkLogin(Model model, @RequestParam("username")String username, @RequestParam("password")String password, HttpSession session){
-        if (username.equals("admin") && password.equals("admin")) {
-            return "redirect:/admin";
-        }
-
-        if (userService.checkLogin(username, password)) {
-            rememberUser = username;
-            GlobalData.RememberUser = username;
-            session.setAttribute("USERNAME", username);
-            model.addAttribute("USERS", userService.findAll());
-            return "redirect:/homePage";
-        }
-        model.addAttribute("ERROR", "Username or password not exist");
-        return "web/Login";
-    }
+//    @PostMapping("/checkLogin")
+//    public String checkLogin(Model model, @RequestParam("username")String username, @RequestParam("password")String password, HttpSession session){
+//        if (username.equals("admin") && password.equals("admin")) {
+//            return "redirect:/admin";
+//        }
+//
+//        if (userService.checkLogin(username, password)) {
+//            rememberUser = username;
+//            GlobalData.RememberUser = username;
+//            session.setAttribute("USERNAME", username);
+//            model.addAttribute("USERS", userService.findAll());
+//            return "redirect:/homePage";
+//        }
+//        model.addAttribute("ERROR", "Username or password not exist");
+//        return "web/Login";
+//    }
 
     //Logout Section
     @GetMapping("logout")
@@ -119,30 +129,29 @@ public class HomePageController {
     }
 
     @PostMapping("/register")
-    public String postUserAdd(@ModelAttribute("USER") User user, Model model, @RequestParam("username")String username) {
-        if (userService.checkRegister(username)) {
-            user.setIsConfirm(0);
-            userService.save(user);
-            return "redirect:/login";
+    public String postUserAdd(@ModelAttribute("USER") UserDTO userDTO, Model model, @RequestParam("username")String username) {
+        if (username.equals(userService.findUserByUsername(username))) {
+            model.addAttribute("ERROR", "Username already existed!");
+            return "web/Register";
         }
-        model.addAttribute("ERROR", "Username already existed!");
-        return "web/Register";
+        userService.save(userDTO);
+        return "web/Login";
     }
-
-    @GetMapping("/user/{username}")
-    public String getUserDetails(@PathVariable String username, Model model) {
-        Optional<User> user = userService.findById(username);
-        if (user.isPresent()) {
-            model.addAttribute("USER", user.get());
-        }else {
-            model.addAttribute("USER", new User());
-        }
-        return "web/User";
-    }
-
-    @PostMapping("/updateUser")
-    public String updateUser(@ModelAttribute("USER") User user, Model model) {
-        userService.save(user);
-        return "redirect:/homePage";
-    }
+//
+//    @GetMapping("/user/{username}")
+//    public String getUserDetails(@PathVariable String username, Model model) {
+//        Optional<User> user = userService.findById(username);
+//        if (user.isPresent()) {
+//            model.addAttribute("USER", user.get());
+//        }else {
+//            model.addAttribute("USER", new User());
+//        }
+//        return "web/User";
+//    }
+//
+//    @PostMapping("/updateUser")
+//    public String updateUser(@ModelAttribute("USER") User user, Model model) {
+//        userService.save(user);
+//        return "redirect:/homePage";
+//    }
 }

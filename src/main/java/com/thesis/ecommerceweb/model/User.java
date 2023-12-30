@@ -53,4 +53,12 @@ public class User implements Serializable {
     public User() {
         super();
     }
+
+    public boolean isConfirm() {
+        return isConfirm;
+    }
+
+    public void setConfirm(boolean confirm) {
+        isConfirm = confirm;
+    }
 }

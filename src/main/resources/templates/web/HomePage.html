@@ -21,6 +21,20 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/skins/skin-demo-9.css}">
     <link rel="stylesheet" th:href="@{/css/demos/demo-9.css}">
+    <!-- Plugins JS File -->
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/jquery.hoverIntent.min.js}"></script>
+    <script th:src="@{/js/jquery.waypoints.min.js}"></script>
+    <script th:src="@{/js/superfish.min.js}"></script>
+    <script th:src="@{/js/owl.carousel.min.js}"></script>
+    <script th:src="@{/js/bootstrap-input-spinner.js}"></script>
+    <script th:src="@{/js/jquery.plugin.min.js}"></script>
+    <script th:src="@{/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{/js/jquery.countdown.min.js}"></script>
+    <!-- Main JS File -->
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/demos/demo-9.js}"></script>
 </head>
 
 <body>
@@ -44,23 +58,25 @@
 
                 <div class="header-right">
                     <div class="dropdown cart-dropdown">
-                        <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" th:if="${session.USERNAME != null}">
-                            <i class="icon-user" style="font-size: 28px;"></i>
-                            <span class="wishlist-txt" th:text="${session.USERNAME}">Login</span>
+                        <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                            <i class="icon-user" th:if="${user != null}" style="font-size: 28px;"></i>
+                            <span class="wishlist-txt" th:if="${user != null}" th:text="${user.getUsername()}">Login</span>
                         </div>
-                        <a class="wishlist-link" th:href="@{/login}" th:if="${session.USERNAME == null}">
+
+                        <a class="wishlist-link" th:href="@{/login}" th:if="${user == null}">
                             <span class="wishlist-txt">Log in</span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" style="transform: translateX(35%); display: flex; justify-content: center; align-items: center; max-width: 170px;" th:if="${session.USERNAME != null}">
+
+                        <div class="dropdown-menu dropdown-menu-right" style="transform: translateX(35%); display: flex; justify-content: center; align-items: center; max-width: 170px;" th:if="${user != null}">
                             <div class="dropdown-cart-products">
                                 <div class="product">
-                                    <a class="wishlist-link" th:href="@{/user/{username}(username=${session.USERNAME})}">
+                                    <a class="wishlist-link" th:href="@{/user/{username}(username=${user.getUsername()})}">
                                         <span class="wishlist-txt">Edit Info</span>
                                     </a>
                                 </div>
 
                                 <div class="product">
-                                    <a class="wishlist-link" th:href="@{/logout}" th:if="${session.USERNAME != null}">
+                                    <a class="wishlist-link" th:href="@{/logout}" th:if="${user != null and user.getUsername() != null}">
                                         <span class="wishlist-txt">Logout</span>
                                     </a>
                                 </div>
@@ -1776,20 +1792,6 @@
         </div>
     </div>
 </div>
-<!-- Plugins JS File -->
-<script th:src="@{/js/jquery.min.js}"></script>
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/js/jquery.hoverIntent.min.js}"></script>
-<script th:src="@{/js/jquery.waypoints.min.js}"></script>
-<script th:src="@{/js/superfish.min.js}"></script>
-<script th:src="@{/js/owl.carousel.min.js}"></script>
-<script th:src="@{/js/bootstrap-input-spinner.js}"></script>
-<script th:src="@{/js/jquery.plugin.min.js}"></script>
-<script th:src="@{/js/jquery.magnific-popup.min.js}"></script>
-<script th:src="@{/js/jquery.countdown.min.js}"></script>
-<!-- Main JS File -->
-<script th:src="@{/js/main.js}"></script>
-<script th:src="@{/js/demos/demo-9.js}"></script>
 </body>
 
 </html>
