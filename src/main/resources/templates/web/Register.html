@@ -50,6 +50,9 @@
           <label>Address</label>
           <input type="text" class="form-control" name="address" placeholder="Enter address">
         </div>
+        <input type="hidden" name="role" value="USER">
+        <input type="hidden" name="isConfirm" value="false">
+        <input type="hidden" name="verificationCode" value=" ">
         <p style="color: red" th:text="${ERROR}"></p>
         <button type="submit" class="btn btn-primary">Register</button>
       </form>

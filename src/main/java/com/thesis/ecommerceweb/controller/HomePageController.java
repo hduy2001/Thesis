@@ -9,8 +9,10 @@ import com.thesis.ecommerceweb.model.User;
 import com.thesis.ecommerceweb.service.CategoryService;
 import com.thesis.ecommerceweb.service.ProductService;
 import com.thesis.ecommerceweb.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class HomePageController {
@@ -114,14 +117,6 @@ public class HomePageController {
 //        return "web/Login";
 //    }
 
-    //Logout Section
-    @GetMapping("logout")
-    public String logout(HttpSession session) {
-        session.removeAttribute("USERNAME");
-        GlobalData.cart.clear();
-        return "redirect:/login";
-    }
-
     //Register Section:
     @GetMapping("/register")
     public String getUser() {
@@ -129,13 +124,28 @@ public class HomePageController {
     }
 
     @PostMapping("/register")
-    public String postUserAdd(@ModelAttribute("USER") UserDTO userDTO, Model model, @RequestParam("username")String username) {
+    public String postUserAdd(@ModelAttribute("USER") UserDTO userDTO, Model model, @RequestParam("username")String username, HttpServletRequest request) {
         if (username.equals(userService.findUserByUsername(username))) {
             model.addAttribute("ERROR", "Username already existed!");
             return "web/Register";
         }
-        userService.save(userDTO);
+        userDTO.setVerificationCode(UUID.randomUUID().toString());
+        String path = request.getRequestURL().toString();
+        path = path.replace(request.getServletPath(), "");
+        userService.save(userDTO, path);
         return "web/Login";
+    }
+
+    @GetMapping("/verify")
+    public String verifyAccount(@Param("code") String code) {
+        userService.verifyAccount(code);
+        return "web/Verification";
+    }
+
+    @PostMapping("/forgotPassword")
+    public String processForgotPassword(@RequestParam("email") String email) {
+        //userService.sendEmailGetPassword(email);
+        return "redirect:/login";
     }
 //
 //    @GetMapping("/user/{username}")

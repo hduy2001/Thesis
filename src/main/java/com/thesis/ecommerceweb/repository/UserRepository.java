@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     User findUserByUsername(String username);
+
+    User findByVerificationCode(String code);
 }
