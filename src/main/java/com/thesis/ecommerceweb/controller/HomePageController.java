@@ -143,8 +143,22 @@ public class HomePageController {
     }
 
     @PostMapping("/forgotPassword")
-    public String processForgotPassword(@RequestParam("email") String email) {
-        //userService.sendEmailGetPassword(email);
+    public String processForgotPassword(@RequestParam("email") String email, HttpServletRequest request) {
+        String path = request.getRequestURL().toString();
+        path = path.replace(request.getServletPath(), "");
+        userService.sendEmailGetPassword(email, path);
+        return "redirect:/login";
+    }
+
+    @GetMapping("/resetPassword")
+    public String resetPassword(@Param("username") String username, Model model) {
+        model.addAttribute("username", username);
+        return "web/NewPassword";
+    }
+
+    @PostMapping("/resetPassword")
+    public String processResetPassword(@RequestParam("username") String username, @RequestParam("confirmPassword") String confirmPassword) {
+        userService.updatePassword(username, confirmPassword);
         return "redirect:/login";
     }
 //

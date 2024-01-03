@@ -9,7 +9,11 @@ public interface UserService {
 
     User findUserByUsername(String username);
 
-    public void sendEmail(User user, String path);
+    void sendEmail(User user, String path);
 
-    public boolean verifyAccount(String verificationCode);
+    boolean verifyAccount(String verificationCode);
+
+    User updatePassword(String username, String confirmPassword);
+
+    void sendEmailGetPassword(String email, String path);
 }

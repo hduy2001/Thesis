@@ -82,5 +82,46 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Override
+    public void sendEmailGetPassword(String email, String path) {
+        User user = userRepository.findUserByEmail(email);
+        if (user != null) {
+            String from = "runningstore2023@gmail.com";
+            String to = email;
+            String subject = "Reset Password";
+            String content = "Dear [[name]],<br>" + "Please click the link below to reset your password:<br>"
+                    + "<h3><a href=\"[[URL]]\" target=\"_self\">REST PASSWORD</a></h3>" + "Thank you,<br>" + "Running Store";
+
+            try {
+
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message);
+
+                helper.setFrom(from, "Running Store");
+                helper.setTo(to);
+                helper.setSubject(subject);
+
+                content = content.replace("[[name]]", user.getUsername());
+                String siteUrl = path + "/resetPassword?username=" + user.getUsername();
+
+
+                content = content.replace("[[URL]]", siteUrl);
+
+                helper.setText(content, true);
+
+                mailSender.send(message);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public User updatePassword(String username, String confirmPassword) {
+        User existingUser = userRepository.findUserByUsername(username);
+        existingUser.setPassword(passwordEncoder.encode(confirmPassword));
+        return userRepository.save(existingUser);
+    }
 
 }
