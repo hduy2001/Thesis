@@ -55,21 +55,20 @@ public class HomePageController {
 
     //ShopPage section:
     @GetMapping("/shopPage/{id}")
-    public String shoesPage(Model model, @PathVariable int id, HttpSession session){
-        if (session.getAttribute("USERNAME") != null) {
-            int total = 0;
-            for (Product product : GlobalData.cart) {
-                total += product.getPrice() * product.getQuantity();
-            }
-            session.setAttribute("USERNAME", rememberUser);
-            model.addAttribute("cart", GlobalData.cart);
-            model.addAttribute("cartCount", GlobalData.cart.size());
-            model.addAttribute("total", total);
-            model.addAttribute("categories", categoryService.getAllCategory());
-            model.addAttribute("products", productService.getAllProductsByCategoryId(id));
-            return "web/ShopPage";
+    public String shoesPage(Model model, @PathVariable int id, Principal principal){
+        int total = 0;
+        for (Product product : GlobalData.cart) {
+            total += product.getPrice() * product.getQuantity();
         }
-        return "redirect:/login";
+        if (principal != null) {
+            model.addAttribute("USERNAME", principal.getName());
+        }
+        model.addAttribute("cart", GlobalData.cart);
+        model.addAttribute("cartCount", GlobalData.cart.size());
+        model.addAttribute("total", total);
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("products", productService.getAllProductsByCategoryId(id));
+        return "web/ShopPage";
     }
 
     @GetMapping("/shopPage/{gender}/{id}")

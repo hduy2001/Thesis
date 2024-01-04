@@ -2,16 +2,25 @@ package com.thesis.ecommerceweb.controller;
 
 import com.thesis.ecommerceweb.configuration.VNPayService;
 import com.thesis.ecommerceweb.global.GlobalData;
+import com.thesis.ecommerceweb.model.Cart;
 import com.thesis.ecommerceweb.model.Order;
 import com.thesis.ecommerceweb.model.Product;
+import com.thesis.ecommerceweb.model.Stock;
 import com.thesis.ecommerceweb.service.OrderService;
 import com.thesis.ecommerceweb.service.ProductService;
+import com.thesis.ecommerceweb.service.StockService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -21,6 +30,9 @@ public class CartController {
     private int totalQuantity = 0;
     @Autowired
     ProductService productService;
+
+    @Autowired
+    StockService stockService;
 
     @Autowired
     OrderService orderService;
@@ -52,6 +64,78 @@ public class CartController {
             GlobalData.cart.add(product);
         }
         return "redirect:/shopPage/" + cid;
+    }
+
+    @GetMapping("/getSize")
+    @ResponseBody
+    public List<String> getStock(@RequestParam int pid) {
+        List<String> listSize = new ArrayList<>();
+
+        for (Stock stock : stockService.getStockByPid(pid)) {
+            listSize.add(stock.getSize());
+        }
+
+        return listSize;
+    }
+
+    @GetMapping("/getStock")
+    @ResponseBody
+    public int getStock(@RequestParam int pid, @RequestParam String size) {
+        int stock = 0;
+        Product product = productService.getProductById(pid).get();
+        if (product.getCategory().getCid() == 2 || product.getCategory().getCid() == 3 || product.getCategory().getCid() == 7) {
+            stock = stockService.getStockOneProduct(pid).get().getInStock();
+        }
+        else {
+            stock = stockService.getStock(pid, size).get().getInStock();
+        }
+
+        return stock;
+    }
+
+//    @PostMapping("/addToCart")
+//    @ResponseBody
+//    public String addCart(@RequestParam int pid, @RequestParam String size, @RequestParam int quantity, Principal principal) {
+//        int stock = stockService.getStock(pid, size).get().getInStock();
+//
+//        if (principal != null) {
+//            Cart existingCart = cartService.findExactlyCart(pid, principal.getName(), size);
+//
+//            if (existingCart != null) {
+//                // Nếu sản phẩm đã tồn tại trong cart, cập nhật quantity nếu không vượt quá tồn kho
+//                int newQuantity = Math.min(stock, existingCart.getQuantity() + quantity);
+//                existingCart.setQuantity(newQuantity);
+//                cartService.saveCart(existingCart);
+//            } else {
+//                // Nếu sản phẩm chưa có trong cart, thêm mới
+//                Cart cart = new Cart();
+//                cart.setUsername(principal.getName());
+//                cart.setPid(pid);
+//                cart.setSize(size);
+//                cart.setQuantity(Math.min(stock, quantity));
+//                cart.setComplete(false);
+//                cartService.saveCart(cart);
+//            }
+//        }
+//
+//        return "Changes saved successfully";
+//    }
+
+    @GetMapping("/updateCartDropdown")
+    public ResponseEntity<Map<String, Object>> updateCartDropdown() {
+        total = 0;
+        Map<String, Object> response = new HashMap<>();
+        List<Product> cartList = new ArrayList<>(GlobalData.cart);
+        for (Product product : GlobalData.cart) {
+            total += product.getPrice() * product.getQuantity();
+            totalQuantity += product.getQuantity();
+        }
+        response.put("cartCount", cartList.size());
+        response.put("total", total);
+        response.put("cart", cartList);
+        response.put("index", cartList);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/cart")

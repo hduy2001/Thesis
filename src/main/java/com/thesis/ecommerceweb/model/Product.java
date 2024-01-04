@@ -20,7 +20,7 @@ public class Product {
     private String color;
     private String gender;
     private int quantity;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cid", referencedColumnName = "cid")
     private Category category;
 
