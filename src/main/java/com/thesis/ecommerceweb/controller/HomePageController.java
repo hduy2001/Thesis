@@ -99,23 +99,6 @@ public class HomePageController {
         return "web/Login";
     }
 
-//    @PostMapping("/checkLogin")
-//    public String checkLogin(Model model, @RequestParam("username")String username, @RequestParam("password")String password, HttpSession session){
-//        if (username.equals("admin") && password.equals("admin")) {
-//            return "redirect:/admin";
-//        }
-//
-//        if (userService.checkLogin(username, password)) {
-//            rememberUser = username;
-//            GlobalData.RememberUser = username;
-//            session.setAttribute("USERNAME", username);
-//            model.addAttribute("USERS", userService.findAll());
-//            return "redirect:/homePage";
-//        }
-//        model.addAttribute("ERROR", "Username or password not exist");
-//        return "web/Login";
-//    }
-
     //Register Section:
     @GetMapping("/register")
     public String getUser() {

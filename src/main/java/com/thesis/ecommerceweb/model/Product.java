@@ -24,6 +24,9 @@ public class Product {
     @JoinColumn(name = "cid", referencedColumnName = "cid")
     private Category category;
 
+    @Column(name = "size")
+    private String size;
+
     public int getPid() {
         return pid;
     }
@@ -102,5 +105,13 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 }

@@ -6,6 +6,7 @@ import com.thesis.ecommerceweb.model.Cart;
 import com.thesis.ecommerceweb.model.Order;
 import com.thesis.ecommerceweb.model.Product;
 import com.thesis.ecommerceweb.model.Stock;
+import com.thesis.ecommerceweb.service.CartService;
 import com.thesis.ecommerceweb.service.OrderService;
 import com.thesis.ecommerceweb.service.ProductService;
 import com.thesis.ecommerceweb.service.StockService;
@@ -38,6 +39,9 @@ public class CartController {
     OrderService orderService;
 
     @Autowired
+    CartService cartService;
+
+    @Autowired
     private VNPayService vnPayService;
 
     @GetMapping("/addToCart/{id}")
@@ -68,7 +72,7 @@ public class CartController {
 
     @GetMapping("/getSize")
     @ResponseBody
-    public List<String> getStock(@RequestParam int pid) {
+    public List<String> getSize(@RequestParam int pid) {
         List<String> listSize = new ArrayList<>();
 
         for (Stock stock : stockService.getStockByPid(pid)) {
@@ -93,47 +97,57 @@ public class CartController {
         return stock;
     }
 
-//    @PostMapping("/addToCart")
-//    @ResponseBody
-//    public String addCart(@RequestParam int pid, @RequestParam String size, @RequestParam int quantity, Principal principal) {
-//        int stock = stockService.getStock(pid, size).get().getInStock();
-//
-//        if (principal != null) {
-//            Cart existingCart = cartService.findExactlyCart(pid, principal.getName(), size);
-//
-//            if (existingCart != null) {
-//                // Nếu sản phẩm đã tồn tại trong cart, cập nhật quantity nếu không vượt quá tồn kho
-//                int newQuantity = Math.min(stock, existingCart.getQuantity() + quantity);
-//                existingCart.setQuantity(newQuantity);
-//                cartService.saveCart(existingCart);
-//            } else {
-//                // Nếu sản phẩm chưa có trong cart, thêm mới
-//                Cart cart = new Cart();
-//                cart.setUsername(principal.getName());
-//                cart.setPid(pid);
-//                cart.setSize(size);
-//                cart.setQuantity(Math.min(stock, quantity));
-//                cart.setComplete(false);
-//                cartService.saveCart(cart);
-//            }
-//        }
-//
-//        return "Changes saved successfully";
-//    }
+    @PostMapping("/addToCart")
+    @ResponseBody
+    public String addCart(@RequestParam int pid, @RequestParam String size, @RequestParam int quantity, Principal principal) {
+        int stock = stockService.getStock(pid, size).get().getInStock();
+
+        if (principal != null) {
+            Cart existingCart = cartService.findExactlyCart(pid, principal.getName(), size);
+
+            if (existingCart != null) {
+                // Nếu sản phẩm đã tồn tại trong cart, cập nhật quantity nếu không vượt quá tồn kho
+                int newQuantity = Math.min(stock, existingCart.getQuantity() + quantity);
+                existingCart.setQuantity(newQuantity);
+                cartService.saveCart(existingCart);
+            } else {
+                // Nếu sản phẩm chưa có trong cart, thêm mới
+                Cart cart = new Cart();
+                cart.setUsername(principal.getName());
+                cart.setPid(pid);
+                cart.setSize(size);
+                cart.setQuantity(Math.min(stock, quantity));
+                cart.setComplete(false);
+                cartService.saveCart(cart);
+            }
+        }
+
+        return "Changes saved successfully";
+    }
 
     @GetMapping("/updateCartDropdown")
-    public ResponseEntity<Map<String, Object>> updateCartDropdown() {
-        total = 0;
+    public ResponseEntity<Map<String, Object>> updateCartDropdown(Principal principal) {
         Map<String, Object> response = new HashMap<>();
-        List<Product> cartList = new ArrayList<>(GlobalData.cart);
-        for (Product product : GlobalData.cart) {
-            total += product.getPrice() * product.getQuantity();
-            totalQuantity += product.getQuantity();
+        List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
+        List<Product> productList = new ArrayList<>();
+        totalQuantity = 0;
+        total = 0;
+        for (int i = 0; i < userCarts.size(); i++) {
+            Product product = productService.getProductById(userCarts.get(i).getPid()).get();
+            Product cartProduct = new Product();
+            cartProduct.setPid(product.getPid());
+            cartProduct.setName(product.getName());
+            cartProduct.setPrice(product.getPrice());
+            cartProduct.setImage(product.getImage());
+            cartProduct.setColor(product.getColor());
+            cartProduct.setSize(userCarts.get(i).getSize());
+            cartProduct.setQuantity(userCarts.get(i).getQuantity());
+            total += (product.getPrice() * userCarts.get(i).getQuantity());
+            productList.add(cartProduct);
         }
-        response.put("cartCount", cartList.size());
+        response.put("cartCount", userCarts.size());
         response.put("total", total);
-        response.put("cart", cartList);
-        response.put("index", cartList);
+        response.put("cart", productList);
 
         return ResponseEntity.ok(response);
     }
@@ -150,10 +164,12 @@ public class CartController {
         return "/web/cart";
     }
 
-    @GetMapping("/cart/removeItem/{index}")
-    public String cartItemRemove(@PathVariable int index) {
-        GlobalData.cart.remove(index);
-        return "redirect:/cart";
+    @GetMapping("/removeItem")
+    public ResponseEntity<Map<String, Object>> cartItemRemove(@RequestParam int pid, @RequestParam String size, Principal principal) {
+        Map<String, Object> response = new HashMap<>();
+        Cart existingCart = cartService.findExactlyCart(pid, principal.getName(), size);
+        cartService.removeItem(existingCart.getCartId());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/shopPage/removeItem/{index}")
