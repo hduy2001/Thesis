@@ -68,16 +68,22 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" style="transform: translateX(35%); display: flex; justify-content: center; align-items: center; max-width: 170px;" th:if="${user != null}">
-                            <div class="dropdown-cart-products">
-                                <div class="product">
+                            <div class="dropdown-item-lead">
+                                <div class="product" style="justify-content: center;">
                                     <a class="wishlist-link" th:href="@{/user/{username}(username=${user.getUsername()})}">
-                                        <span class="wishlist-txt">Edit Info</span>
+                                        <span style="font-size: 15px;">Edit Info</span>
                                     </a>
                                 </div>
 
-                                <div class="product">
+                                <div class="product" style="justify-content: center;">
+                                    <a class="wishlist-link" th:href="@{/user/{username}(username=${user.getUsername()})}">
+                                        <span style="font-size: 15px;">Order</span>
+                                    </a>
+                                </div>
+
+                                <div class="product" style="justify-content: center;">
                                     <a class="wishlist-link" th:href="@{/logout}" th:if="${user != null and user.getUsername() != null}">
-                                        <span class="wishlist-txt">Logout</span>
+                                        <span style="font-size: 15px;">Logout</span>
                                     </a>
                                 </div>
                             </div>

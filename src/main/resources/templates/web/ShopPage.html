@@ -16,6 +16,8 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <!-- Main CSS File -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/skins/skin-demo-9.css}">
+    <link rel="stylesheet" th:href="@{/css/demos/demo-9.css}">
     <link rel="stylesheet" th:href="@{/css/plugins/owl-carousel/owl.carousel.css}">
     <link rel="stylesheet" th:href="@{/css/plugins/magnific-popup/magnific-popup.css}">
     <link rel="stylesheet" th:href="@{/css/plugins/nouislider/nouislider.css}">
@@ -207,7 +209,7 @@
                                     <div class="product product-7 text-center">
                                         <figure class="product-media">
 <!--                                            <span class="product-label label-new">New</span>-->
-                                            <a href="product.html">
+                                            <a th:href="@{/product}">
                                                 <img th:src="@{${'/images/products/' + product.image}}" alt="Product image" class="product-image">
                                             </a>
 
@@ -660,7 +662,7 @@
                         <li><a href="product-gallery.html">Gallery</a></li>
                         <li><a href="product-sticky.html">Sticky Info</a></li>
                         <li><a href="product-sidebar.html">Boxed With Sidebar</a></li>
-                        <li><a href="products.html">Full Width</a></li>
+                        <li><a href="Product.html">Full Width</a></li>
                         <li><a href="product-masonry.html">Masonry Sticky Info</a></li>
                     </ul>
                 </li>

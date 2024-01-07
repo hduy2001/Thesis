@@ -60,8 +60,9 @@ public class HomePageController {
         for (Product product : GlobalData.cart) {
             total += product.getPrice() * product.getQuantity();
         }
-        if (principal != null) {
-            model.addAttribute("USERNAME", principal.getName());
+        if(principal != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+            model.addAttribute("user", userDetails);
         }
         model.addAttribute("cart", GlobalData.cart);
         model.addAttribute("cartCount", GlobalData.cart.size());
@@ -160,4 +161,10 @@ public class HomePageController {
 //        userService.save(user);
 //        return "redirect:/homePage";
 //    }
+
+    //Login Section:
+    @GetMapping("/product")
+    public String showProduct(){
+        return "web/products";
+    }
 }
