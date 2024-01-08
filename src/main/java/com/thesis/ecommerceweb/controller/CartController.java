@@ -152,6 +152,14 @@ public class CartController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/removeItem")
+    public ResponseEntity<Map<String, Object>> cartItemRemove(@RequestParam int pid, @RequestParam String size, Principal principal) {
+        Map<String, Object> response = new HashMap<>();
+        Cart existingCart = cartService.findExactlyCart(pid, principal.getName(), size);
+        cartService.removeItem(existingCart.getCartId());
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/cart")
     public String cartGet(Model model) {
         for (Product product : GlobalData.cart) {
@@ -161,15 +169,7 @@ public class CartController {
         model.addAttribute("cartCount", GlobalData.cart.size());
         model.addAttribute("total", total);
         model.addAttribute("cart", GlobalData.cart);
-        return "/web/cart";
-    }
-
-    @GetMapping("/removeItem")
-    public ResponseEntity<Map<String, Object>> cartItemRemove(@RequestParam int pid, @RequestParam String size, Principal principal) {
-        Map<String, Object> response = new HashMap<>();
-        Cart existingCart = cartService.findExactlyCart(pid, principal.getName(), size);
-        cartService.removeItem(existingCart.getCartId());
-        return ResponseEntity.ok(response);
+        return "/web/Cart";
     }
 
     @GetMapping("/shopPage/removeItem/{index}")

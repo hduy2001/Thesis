@@ -228,6 +228,67 @@
     </div>
 </div>
 
+<script th:inline="javascript">
+    $(document).ready(function() {
+        // Call the function on page load
+        updateCartDropdown();
+    });
+    function updateCartDropdown() {
+        $.ajax({
+            type: "GET",
+            url: "/updateCartDropdown", // Replace with the actual endpoint to get updated cart information
+            success: function(response) {
+                // Update the content of the cart dropdown
+                $(".dropdown-cart-products").empty(); // Clear existing content
+
+                // Iterate through the updated cart items and append them to the dropdown
+                var cartArray = Array.isArray(response.cart) ? response.cart : [];
+                cartArray.forEach(function(item) {
+                    var formattedPrice = parseFloat(item.price).toLocaleString(undefined, { maximumFractionDigits: 2 });
+                    $(".dropdown-cart-products").append(
+                        '<div class="product">' +
+                        '<div class="product-cart-details">' +
+                        '<h4 class="product-title">' + item.name + '</h4>' +
+                        '<span class="cart-product-info">' + formattedPrice + '</span>' +
+                        '<h5 class="product-title">Quantity: ' + item.quantity + '</h5>' +
+                        '<h5 class="product-title">Size: ' + item.size + '</h5>' +
+                        '</div>' +
+                        '<figure class="product-image-container">' +
+                        '<img src="/images/products/' + item.image + '" alt="product">' +
+                        '</figure>' +
+                        // '<a href="/shopPage/removeItem/' + item.index + '" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>' +
+                        '<button class="btn-remove" title="Remove Product" onclick="removeItem(' + item.pid + ', \'' + item.size + '\');"><i class="icon-close"></i></button>' +
+                        '</div>'
+                    );
+                    console.log(item.name)
+                });
+
+                // Update the total price in the cart dropdown
+                $(".cart-total-price").text(parseFloat(response.total).toLocaleString(undefined, { maximumFractionDigits: 2 }));
+                $(".cart-count").text(response.cartCount);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error updating cart dropdown: " + xhr.responseText);
+            }
+        });
+    }
+
+    function removeItem(pid, size) {
+        $.ajax({
+            type: "GET",
+            url: "/removeItem",
+            data: { pid: pid, size: size },
+            success: function(response) {
+                console.log("Stock response:", response);
+                updateCartDropdown();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error: " + xhr.responseText);
+            }
+        });
+    }
+</script>
+
 </body>
 
 </html>
