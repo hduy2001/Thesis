@@ -13,6 +13,8 @@ import com.thesis.ecommerceweb.service.StockService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class CartController {
     private int cid;
     private int total = 0;
+    private int newTotal = 0;
     private int totalQuantity = 0;
     @Autowired
     ProductService productService;
@@ -43,6 +46,9 @@ public class CartController {
 
     @Autowired
     private VNPayService vnPayService;
+
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @GetMapping("/addToCart/{id}")
     public String addToCart(@PathVariable int id) {
@@ -161,21 +167,45 @@ public class CartController {
     }
 
     @GetMapping("/cart")
-    public String cartGet(Model model) {
-        for (Product product : GlobalData.cart) {
-            total += product.getPrice() * product.getQuantity();
-            totalQuantity += product.getQuantity();
+    public String cartGet(Model model, Principal principal) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+        model.addAttribute("user", userDetails);
+        List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
+        List<Product> productList = new ArrayList<>();
+        totalQuantity = 0;
+        total = 0;
+        for (int i = 0; i < userCarts.size(); i++) {
+            Product product = productService.getProductById(userCarts.get(i).getPid()).get();
+            Product cartProduct = new Product();
+            cartProduct.setPid(product.getPid());
+            cartProduct.setName(product.getName());
+            cartProduct.setPrice(product.getPrice());
+            cartProduct.setImage(product.getImage());
+            cartProduct.setColor(product.getColor());
+            cartProduct.setSize(userCarts.get(i).getSize());
+            cartProduct.setQuantity(userCarts.get(i).getQuantity());
+            total += (product.getPrice() * userCarts.get(i).getQuantity());
+            productList.add(cartProduct);
         }
-        model.addAttribute("cartCount", GlobalData.cart.size());
+        model.addAttribute("cartCount", userCarts.size());
         model.addAttribute("total", total);
-        model.addAttribute("cart", GlobalData.cart);
+        model.addAttribute("cart", productList);
         return "/web/Cart";
     }
 
-    @GetMapping("/shopPage/removeItem/{index}")
-    public String removeItem(@PathVariable int index) {
-        GlobalData.cart.remove(index);
-        return "redirect:/shopPage/" + cid;
+    @GetMapping("/getShippingCost")
+    @ResponseBody
+    public int getShippingCost(@RequestParam int shippingCost) {
+        newTotal = total + shippingCost;
+        return newTotal;
+    }
+
+    @PostMapping("/updateCartItem")
+    public String updateCartItem(@RequestParam int quantity, @RequestParam int pid, @RequestParam String size, Principal principal, Model model) {
+        Cart existingCart = cartService.findExactlyCart(pid, principal.getName(), size);
+        existingCart.setQuantity(quantity);
+        cartService.saveCart(existingCart);
+        return "redirect:/cart";
     }
 
     @GetMapping("/checkoutCod")
