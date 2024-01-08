@@ -40,4 +40,8 @@ public class ProductService {
         return productRepository.findAllByGenderAndBrandAndCategory_Cid(gender, brand, id);
     }
 
+    public List<Product> getAllProductsByBrand(String brand) {
+        return productRepository.findAllByBrand(brand);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.thesis.ecommerceweb.dto.UserDTO;
 import com.thesis.ecommerceweb.model.User;
 
 public interface UserService {
+    User updateUser(UserDTO userDTO);
 
     User save (UserDTO userDTO, String path);
 

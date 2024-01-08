@@ -21,6 +21,20 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private JavaMailSender mailSender;
 
+
+    @Override
+    public User updateUser(UserDTO userDTO) {
+        User existingUser = userRepository.findUserByUsername(userDTO.getUsername());
+        existingUser.setName(userDTO.getName());
+        if (!userDTO.getPassword().equals(existingUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
+        existingUser.setEmail(userDTO.getEmail());
+        existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+        existingUser.setAddress(userDTO.getAddress());
+        return userRepository.save(existingUser);
+    }
+
     @Override
     public User save(UserDTO userDTO, String path) {
         User user = new User(userDTO.getUsername(), passwordEncoder.encode(userDTO.getPassword()), userDTO.getName(), userDTO.getEmail(), userDTO.getPhoneNumber(), userDTO.getAddress(), userDTO.getRole(), userDTO.getVerificationCode(), userDTO.isConfirm());

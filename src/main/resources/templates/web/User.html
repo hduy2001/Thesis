@@ -16,8 +16,24 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <!-- Main CSS File -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/plugins/owl-carousel/owl.carousel.css}">
     <link rel="stylesheet" th:href="@{/css/plugins/magnific-popup/magnific-popup.css}">
     <link rel="stylesheet" th:href="@{/css/plugins/nouislider/nouislider.css}">
+    <!-- Plugins JS File -->
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/jquery.hoverIntent.min.js}"></script>
+    <script th:src="@{/js/jquery.waypoints.min.js}"></script>
+    <script th:src="@{/js/superfish.min.js}"></script>
+    <script th:src="@{/js/owl.carousel.min.js}"></script>
+    <script th:src="@{/js/wNumb.js}"></script>
+    <script th:src="@{/js/bootstrap-input-spinner.js}"></script>
+    <script th:src="@{/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{/js/nouislider.min.js}"></script>
+    <script th:src="@{/js/jquery.plugin.min.js}"></script>
+    <script th:src="@{/js/jquery.countdown.min.js}"></script>
+    <!-- Main JS File -->
+    <script th:src="@{/js/main.js}"></script>
 </head>
 
 <body>
@@ -102,8 +118,47 @@
                 </div><!-- End .header-left -->
 
                 <div class="header-right">
-                    <i class="icon-user" style="font-size: 28px; padding-left: 10px;"></i>
-                    <span class="wishlist-txt" th:text="${session.USERNAME}" style="font-size: 15px;">Login</span>
+                    <div class="header-search">
+                        <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
+                        <form action="#" method="get">
+                            <div class="header-search-wrapper">
+                                <label for="q" class="sr-only">Search</label>
+                                <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." required>
+                            </div><!-- End .header-search-wrapper -->
+                        </form>
+                    </div><!-- End .header-search -->
+                    <div class="dropdown cart-dropdown">
+                        <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                            <i class="icon-user" th:if="${user != null}" style="font-size: 28px; padding-left: 10px;"></i>
+                            <span class="wishlist-txt" th:if="${user != null}" th:text="${user.getUsername()}" style="font-size: 15px;">Login</span>
+                        </div>
+
+                        <a class="wishlist-link" th:href="@{/login}" th:if="${user == null}">
+                            <span class="wishlist-txt" style="font-size: 15px;">Log in</span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" style="transform: translateX(35%); display: flex; justify-content: center; align-items: center; max-width: 170px;" th:if="${user != null}">
+                            <div class="dropdown-item-lead">
+                                <div class="product" style="justify-content: center;">
+                                    <a class="wishlist-link" th:href="@{/user}">
+                                        <span style="font-size: 15px;">Edit Info</span>
+                                    </a>
+                                </div>
+
+                                <div class="product" style="justify-content: center;">
+                                    <a class="wishlist-link" th:href="@{/user/{username}(username=${user.getUsername()})}">
+                                        <span style="font-size: 15px;">Order</span>
+                                    </a>
+                                </div>
+
+                                <div class="product" style="justify-content: center;">
+                                    <a class="wishlist-link" th:href="@{/logout}" th:if="${user != null and user.getUsername() != null}">
+                                        <span style="font-size: 15px;">Logout</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div><!-- End .dropdown-menu -->
+                    </div><!-- End .cart-dropdown -->
                     <div class="dropdown cart-dropdown">
                         <a th:href="@{/cart}" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                             <i class="icon-shopping-cart"></i>
@@ -111,24 +166,13 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" >
-                            <div class="dropdown-cart-products" th:each="item, iStat : ${cart}">
-                                <div class="product">
-                                    <div class="product-cart-details">
-                                        <h4 class="product-title" th:text="${item.name}">Duy</h4>
-                                        <span class="cart-product-info" th:text="${item.price}"></span>
-                                    </div><!-- End .product-cart-details -->
-
-                                    <figure class="product-image-container">
-                                        <img th:src="@{${'/images/products/' + item.image}}" alt="product">
-                                    </figure>
-                                    <a th:href="@{/shopPage/removeItem/{index}(index=${iStat.index})}" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
-                                </div><!-- End .product -->
+                            <div class="dropdown-cart-products">
                             </div><!-- End .cart-product -->
 
                             <div class="dropdown-cart-total">
                                 <span>Total</span>
 
-                                <span class="cart-total-price" th:text="${total}"></span>
+                                <span class="cart-total-price" th:text="${#strings.replace(#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT'), ',', '.')}"></span>
                             </div><!-- End .dropdown-cart-total -->
 
                             <div class="col border-end  d-flex justify-content-center align-items-center">
@@ -172,6 +216,9 @@
                             <label>Address</label>
                             <input type="text" class="form-control" name="address" placeholder="Enter address" th:field="*{address}">
                         </div>
+                        <input type="hidden" name="role" value="USER">
+                        <input type="hidden" name="isConfirm" value="true">
+                        <input type="hidden" name="verificationCode" value="null">
                         <p style="color: red" th:text="${ERROR}"></p>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
@@ -181,17 +228,6 @@
     </div>
 </div>
 
-
-<!-- Đường dẫn đến các tệp JavaScript của Bootstrap -->
-<!-- Plugins JS File -->
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/jquery.hoverIntent.min.js"></script>
-<script src="assets/js/jquery.waypoints.min.js"></script>
-<script src="assets/js/superfish.min.js"></script>
-<script src="assets/js/owl.carousel.min.js"></script>
-<!-- Main JS File -->
-<script src="assets/js/main.js"></script>
 </body>
 
 </html>

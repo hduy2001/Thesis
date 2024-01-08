@@ -16,8 +16,6 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <!-- Main CSS File -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/skins/skin-demo-9.css}">
-    <link rel="stylesheet" th:href="@{/css/demos/demo-9.css}">
     <link rel="stylesheet" th:href="@{/css/plugins/owl-carousel/owl.carousel.css}">
     <link rel="stylesheet" th:href="@{/css/plugins/magnific-popup/magnific-popup.css}">
     <link rel="stylesheet" th:href="@{/css/plugins/nouislider/nouislider.css}">
@@ -131,21 +129,31 @@
                     </div><!-- End .header-search -->
                     <div class="dropdown cart-dropdown">
                         <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                            <i class="icon-user" style="font-size: 28px; padding-left: 10px;"></i>
-                            <span class="wishlist-txt" th:text="${USERNAME}" style="font-size: 15px;">Login</span>
+                            <i class="icon-user" th:if="${user != null}" style="font-size: 28px; padding-left: 10px;"></i>
+                            <span class="wishlist-txt" th:if="${user != null}" th:text="${user.getUsername()}" style="font-size: 15px;">Login</span>
                         </div>
 
-                        <div class="dropdown-menu dropdown-menu-right" style="transform: translateX(35%); display: flex; justify-content: center; align-items: center; max-width: 170px;">
+                        <a class="wishlist-link" th:href="@{/login}" th:if="${user == null}">
+                            <span class="wishlist-txt" style="font-size: 15px;">Log in</span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" style="transform: translateX(35%); display: flex; justify-content: center; align-items: center; max-width: 170px;" th:if="${user != null}">
                             <div class="dropdown-item-lead">
-                                <div class="product">
-                                    <a class="wishlist-link" th:href="@{/user}" style="display: flex; justify-content: center;">
-                                        <span style="font-size: 15px; text-align: center; margin: auto;">Edit Info</span>
+                                <div class="product" style="justify-content: center;">
+                                    <a class="wishlist-link" th:href="@{/user}">
+                                        <span style="font-size: 15px;">Edit Info</span>
                                     </a>
                                 </div>
 
-                                <div class="product">
-                                    <a class="wishlist-link"  style="display: flex; justify-content: center;"th:href="@{/logout}" th:if="${USERNAME != null}">
-                                        <span class="wishlist-txt" style="font-size: 15px; text-align: center; margin: auto;">Logout</span>
+                                <div class="product" style="justify-content: center;">
+                                    <a class="wishlist-link" th:href="@{/user/{username}(username=${user.getUsername()})}">
+                                        <span style="font-size: 15px;">Order</span>
+                                    </a>
+                                </div>
+
+                                <div class="product" style="justify-content: center;">
+                                    <a class="wishlist-link" th:href="@{/logout}" th:if="${user != null and user.getUsername() != null}">
+                                        <span style="font-size: 15px;">Logout</span>
                                     </a>
                                 </div>
                             </div>
@@ -209,7 +217,7 @@
                                     <div class="product product-7 text-center">
                                         <figure class="product-media">
 <!--                                            <span class="product-label label-new">New</span>-->
-                                            <a th:href="@{/product}">
+                                            <a th:href="@{/product/{id}(id=${product.pid})}">
                                                 <img th:src="@{${'/images/products/' + product.image}}" alt="Product image" class="product-image">
                                             </a>
 
@@ -225,7 +233,7 @@
                                             <div class="product-cat">
                                                 <a href="#" th:text="${product.gender}"></a>
                                             </div><!-- End .product-cat -->
-                                            <h3 th:text="${product.name}" class="product-title"><a th:href="@{product.html}"></a></h3><!-- End .product-title -->
+                                            <h3 th:text="${product.name}" class="product-title"><a th:href="@{/product/{id}(id=${product.pid})}"></a></h3><!-- End .product-title -->
                                             <div th:text="${#strings.replace(#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT'), ',', '.').concat(' đ')}" class="product-price">
 
                                             </div><!-- End .product-price -->
@@ -661,8 +669,8 @@
                         <li><a href="product-extended.html"><span>Extended Info<span class="tip tip-new">New</span></span></a></li>
                         <li><a href="product-gallery.html">Gallery</a></li>
                         <li><a href="product-sticky.html">Sticky Info</a></li>
-                        <li><a href="product-sidebar.html">Boxed With Sidebar</a></li>
-                        <li><a href="Product.html">Full Width</a></li>
+                        <li><a href="Product.html">Boxed With Sidebar</a></li>
+                        <li><a href="ProductOld.html">Full Width</a></li>
                         <li><a href="product-masonry.html">Masonry Sticky Info</a></li>
                     </ul>
                 </li>

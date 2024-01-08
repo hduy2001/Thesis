@@ -8,6 +8,7 @@ import com.thesis.ecommerceweb.model.Product;
 import com.thesis.ecommerceweb.model.User;
 import com.thesis.ecommerceweb.service.CategoryService;
 import com.thesis.ecommerceweb.service.ProductService;
+import com.thesis.ecommerceweb.service.StockService;
 import com.thesis.ecommerceweb.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +26,6 @@ import java.util.UUID;
 
 @Controller
 public class HomePageController {
-    private String rememberUser;
     @Autowired
     CategoryService categoryService;
     @Autowired
@@ -34,6 +34,8 @@ public class HomePageController {
     UserService userService;
     @Autowired
     UserDetailsService userDetailsService;
+    @Autowired
+    StockService stockService;
 
     @GetMapping("/homePage")
     public String homePage(Model model, Principal principal){
@@ -56,42 +58,45 @@ public class HomePageController {
     //ShopPage section:
     @GetMapping("/shopPage/{id}")
     public String shoesPage(Model model, @PathVariable int id, Principal principal){
-        int total = 0;
-        for (Product product : GlobalData.cart) {
-            total += product.getPrice() * product.getQuantity();
-        }
         if(principal != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
-        model.addAttribute("cart", GlobalData.cart);
-        model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("total", total);
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("products", productService.getAllProductsByCategoryId(id));
         return "web/ShopPage";
     }
 
     @GetMapping("/shopPage/{gender}/{id}")
-    public String shoesPageGender(Model model, @PathVariable String gender, @PathVariable int id, HttpSession session){
-        if (session.getAttribute("USERNAME") != null) {
-            session.setAttribute("USERNAME", rememberUser);
-            model.addAttribute("categories", categoryService.getAllCategory());
-            model.addAttribute("products", productService.getAllProductsByGender(gender, id));
-            return "web/ShopPage";
+    public String shoesPageGender(Model model, @PathVariable String gender, @PathVariable int id, Principal principal){
+        if (principal != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+            model.addAttribute("user", userDetails);
         }
-        return "redirect:/login";
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("products", productService.getAllProductsByGender(gender, id));
+        return "web/ShopPage";
     }
 
     @GetMapping("/shopPage/{gender}/{brand}/{id}")
-    public String shoesPageBrand(Model model, @PathVariable String gender, @PathVariable String brand, @PathVariable int id, HttpSession session){
-        if (session.getAttribute("USERNAME") != null) {
-            session.setAttribute("USERNAME", rememberUser);
-            model.addAttribute("categories", categoryService.getAllCategory());
-            model.addAttribute("products", productService.getAllProductsByGenderAndBrand(gender, brand, id));
-            return "web/ShopPage";
+    public String shoesPageBrand(Model model, @PathVariable String gender, @PathVariable String brand, @PathVariable int id, Principal principal){
+        if (principal != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+            model.addAttribute("user", userDetails);
         }
-        return "redirect:/login";
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("products", productService.getAllProductsByGenderAndBrand(gender, brand, id));
+        return "web/ShopPage";
+    }
+
+    @GetMapping("/shopPageBrand/{brand}")
+    public String shopPageBrand(Model model, @PathVariable String brand, Principal principal){
+        if (principal != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+            model.addAttribute("user", userDetails);
+        }
+        model.addAttribute("products", productService.getAllProductsByBrand(brand));
+        return "web/ShopPage";
     }
 
     //Login Section:
@@ -144,27 +149,30 @@ public class HomePageController {
         userService.updatePassword(username, confirmPassword);
         return "redirect:/login";
     }
-//
-//    @GetMapping("/user/{username}")
-//    public String getUserDetails(@PathVariable String username, Model model) {
-//        Optional<User> user = userService.findById(username);
-//        if (user.isPresent()) {
-//            model.addAttribute("USER", user.get());
-//        }else {
-//            model.addAttribute("USER", new User());
-//        }
-//        return "web/User";
-//    }
-//
-//    @PostMapping("/updateUser")
-//    public String updateUser(@ModelAttribute("USER") User user, Model model) {
-//        userService.save(user);
-//        return "redirect:/homePage";
-//    }
+
+    @GetMapping("/user")
+    public String getUserDetails(Model model, Principal principal) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+        model.addAttribute("user", userDetails);
+        model.addAttribute("USER", userService.findUserByUsername(principal.getName()));
+        return "web/User";
+    }
+
+    @PostMapping("/updateUser")
+    public String updateUser(@ModelAttribute("USER") UserDTO userDTO) {
+        userService.updateUser(userDTO);
+        return "redirect:/homePage";
+    }
 
     //Login Section:
-    @GetMapping("/product")
-    public String showProduct(){
-        return "web/products";
+    @GetMapping("/product/{id}")
+    public String showProduct(@PathVariable int id, Principal principal, Model model){
+        if(principal != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+            model.addAttribute("user", userDetails);
+        }
+        model.addAttribute("product", productService.getProductById(id).get());
+        model.addAttribute("sizes", stockService.getStockByPid(id));
+        return "web/Product";
     }
 }

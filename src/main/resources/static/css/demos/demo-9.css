@@ -23,7 +23,7 @@
 }
 
 .header.header-6 .header-bottom .menu > li:hover > a, .header.header-6 .header-bottom .menu > li:focus > a, .header.header-6 .header-bottom .menu > li.active > a {
-    color: #1cc0a0
+    color: #c96
 }
 
 .header.header-6 .header-bottom .menu > li > a {
@@ -54,7 +54,7 @@
 }
 
 .header.header-6 .wishlist-link:hover .wishlist-txt, .header.header-6 .wishlist-link:hover .cart-txt, .header.header-6 .wishlist-link:focus .wishlist-txt, .header.header-6 .wishlist-link:focus .cart-txt, .header.header-6 .cart-dropdown:hover .wishlist-txt, .header.header-6 .cart-dropdown:hover .cart-txt, .header.header-6 .cart-dropdown:focus .wishlist-txt, .header.header-6 .cart-dropdown:focus .cart-txt {
-    color: #1cc0a0
+    color: #c96
 }
 
 .title-lg {
@@ -282,7 +282,7 @@ hr {
     padding-top: 1.3rem;
     padding-bottom: 1.3rem;
     color: #fff;
-    background-color: #1cc0a0;
+    background-color: #c96;
     border-bottom: none
 }
 
@@ -314,7 +314,7 @@ hr {
 
 .product.product-7 .btn-product-icon {
     color: #fff;
-    background-color: #1cc0a0
+    background-color: #c96
 }
 
 .product.product-7 .btn-product-icon:hover, .product.product-7 .btn-product-icon:focus {
@@ -463,7 +463,7 @@ hr {
 }
 
 .featured .owl-simple .owl-nav [class*='owl-']:hover, .featured .owl-simple .owl-nav [class*='owl-']:focus {
-    color: #1cc0a0;
+    color: #c96;
     background-color: #fff
 }
 
@@ -531,7 +531,7 @@ hr {
 }
 
 .product-banner .btn.banner-link:hover, .product-banner .btn.banner-link:focus {
-    border-color: #1cc0a0
+    border-color: #c96
 }
 
 .footer {
@@ -552,7 +552,7 @@ hr {
 }
 
 .footer .widget-about-info a {
-    color: #1cc0a0
+    color: #c96
 }
 
 .footer .widget-title {

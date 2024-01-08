@@ -1,5 +1,6 @@
 package com.thesis.ecommerceweb.configuration;
 
+import com.thesis.ecommerceweb.service.CustomLogoutSuccessHandler;
 import com.thesis.ecommerceweb.service.CustomSuccessHandler;
 import com.thesis.ecommerceweb.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class SecurityConfig {
     @Autowired
     CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
+
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -34,7 +38,7 @@ public class SecurityConfig {
         http.csrf(c -> c.disable())
 
                 .authorizeHttpRequests(request -> request.requestMatchers("/admin").hasAuthority("ADMIN")
-                        .requestMatchers("/register", "/css/**", "/js/**", "/static/**", "/vendor/**", "/fonts/**", "/images/**", "/homePage", "/verify", "/newPassword", "/forgotPassword", "/resetPassword", "/shopPage/**", "/getSize/**", "/getStock/**").permitAll()
+                        .requestMatchers("/register", "/css/**", "/js/**", "/static/**", "/vendor/**", "/fonts/**", "/images/**", "/homePage", "/verify", "/newPassword", "/forgotPassword", "/resetPassword", "/shopPage/**", "/getSize/**", "/getStock/**", "/product/**").permitAll()
                         .anyRequest().authenticated())
 
                 .formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login")
@@ -42,7 +46,7 @@ public class SecurityConfig {
 
                 .logout(form -> form.invalidateHttpSession(true).clearAuthentication(true)
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout").permitAll());
+                        .logoutSuccessHandler(customLogoutSuccessHandler).permitAll());
 
         return http.build();
 
