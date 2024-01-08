@@ -1,15 +1,13 @@
 package com.thesis.ecommerceweb.controller;
 
 import com.thesis.ecommerceweb.configuration.VNPayService;
+import com.thesis.ecommerceweb.dto.UserDTO;
 import com.thesis.ecommerceweb.global.GlobalData;
 import com.thesis.ecommerceweb.model.Cart;
 import com.thesis.ecommerceweb.model.Order;
 import com.thesis.ecommerceweb.model.Product;
 import com.thesis.ecommerceweb.model.Stock;
-import com.thesis.ecommerceweb.service.CartService;
-import com.thesis.ecommerceweb.service.OrderService;
-import com.thesis.ecommerceweb.service.ProductService;
-import com.thesis.ecommerceweb.service.StockService;
+import com.thesis.ecommerceweb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +29,7 @@ public class CartController {
     private int cid;
     private int total = 0;
     private int newTotal = 0;
+    private int shipCost = 0;
     private int totalQuantity = 0;
     @Autowired
     ProductService productService;
@@ -43,6 +42,9 @@ public class CartController {
 
     @Autowired
     CartService cartService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     private VNPayService vnPayService;
@@ -196,7 +198,8 @@ public class CartController {
     @GetMapping("/getShippingCost")
     @ResponseBody
     public int getShippingCost(@RequestParam int shippingCost) {
-        newTotal = total + shippingCost;
+        shipCost = shippingCost;
+        newTotal = total + shipCost;
         return newTotal;
     }
 
@@ -206,6 +209,40 @@ public class CartController {
         existingCart.setQuantity(quantity);
         cartService.saveCart(existingCart);
         return "redirect:/cart";
+    }
+
+    @GetMapping("/checkout")
+    public String checkout(Model model, Principal principal) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+        List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
+        List<Product> productList = new ArrayList<>();
+        totalQuantity = 0;
+        total = 0;
+        for (int i = 0; i < userCarts.size(); i++) {
+            Product product = productService.getProductById(userCarts.get(i).getPid()).get();
+            Product cartProduct = new Product();
+            cartProduct.setPid(product.getPid());
+            cartProduct.setName(product.getName());
+            cartProduct.setPrice(product.getPrice());
+            cartProduct.setImage(product.getImage());
+            cartProduct.setColor(product.getColor());
+            cartProduct.setSize(userCarts.get(i).getSize());
+            cartProduct.setQuantity(userCarts.get(i).getQuantity());
+            total += (product.getPrice() * userCarts.get(i).getQuantity());
+            productList.add(cartProduct);
+        }
+        model.addAttribute("total", total);
+        model.addAttribute("cart", productList);
+        model.addAttribute("user", userDetails);
+        model.addAttribute("shipCost", shipCost);
+        model.addAttribute("newTotal", newTotal);
+        model.addAttribute("USER", userService.findUserByUsername(principal.getName()));
+        return "/web/Checkout";
+    }
+
+    @PostMapping("/editDelivery")
+    public String editDelivery(@ModelAttribute("USER") UserDTO userDTO) {
+        return "redirect:/homePage";
     }
 
     @GetMapping("/checkoutCod")

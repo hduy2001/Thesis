@@ -300,7 +300,7 @@
 	                					</tbody>
 	                				</table><!-- End .table table-summary -->
 
-	                				<a href="Checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+	                				<a th:href="@{/checkout}" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
 	                			</div><!-- End .summary -->
 
 		            			<a th:href="@{/shopPage/{id}(id=1)}" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
@@ -453,9 +453,18 @@
         }
 
         $(document).ready(function () {
+            var defaultValue = 0;
+            $('input[name="shipping"]').val([defaultValue]);
+
+            updateShippingCost(defaultValue);
+
             $('input[name="shipping"]').on('change', function () {
                 var shippingCost = parseInt($(this).val());
 
+                updateShippingCost(shippingCost);
+            });
+
+            function updateShippingCost(shippingCost) {
                 $.ajax({
                     type: "GET",
                     url: "/getShippingCost",
@@ -468,8 +477,9 @@
                         console.log('Error updating shipping cost.');
                     }
                 });
-            });
+            }
 
+            // Function to format number with commas
             function numberWithCommas(x) {
                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }
