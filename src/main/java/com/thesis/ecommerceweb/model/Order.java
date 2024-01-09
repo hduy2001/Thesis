@@ -13,12 +13,17 @@ public class Order {
 
     private String username;
 
-    private int total_price;
+    @Column(name = "detail")
+    private String detail;
+
+    @Column(name = "total_price")
+    private int totalPrice;
     private int quantity;
 
-    private String pay_type;
-    @Column(columnDefinition = "TINYINT(1) DEFAULT 0")
-    private Integer is_pay;
+    @Column(name = "pay_type")
+    private String payType;
+    @Column(columnDefinition = "TINYINT(1) DEFAULT 0", name = "is_pay")
+    private int isPay;
     @Column(name = "status")
     private String status;
 }

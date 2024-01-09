@@ -264,21 +264,33 @@ public class CartController {
     }
 
     @PostMapping("/editDelivery")
-    public String editDelivery(@ModelAttribute("USER") UserDTO userDTO, @RequestParam("paymentMethod") String paymentMethod, Model model) {
+    public String editDelivery(@ModelAttribute("USER") UserDTO userDTO, @RequestParam("paymentMethod") String paymentMethod, Order order, Principal principal) {
         if (paymentMethod.equals("COD")) {
+            order.setUsername(principal.getName());
+            order.setDetail(GlobalData.orderName);
+            order.setQuantity(totalQuantity);
+            order.setTotalPrice(newTotal);
+            order.setPayType("COD");
+            order.setStatus("Ordered");
+            order.setIsPay(0);
+            orderService.addOrder(order);
+            totalQuantity = 0;
+            List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
+            cartService.markAndRemoveCompleteCarts(userCarts);
             return "/web/CodNotice";
         }
         return "/web/ordersuccess";
     }
 
     @GetMapping("/checkoutCod")
-    public String checkoutCod(Model model, Order order) {
-        order.setUsername(GlobalData.RememberUser);
+    public String checkoutCod(Order order, Principal principal) {
+        order.setUsername(principal.getName());
+        order.setDetail(GlobalData.orderName);
         order.setQuantity(totalQuantity);
-        order.setTotal_price(total);
-        order.setPay_type("COD");
+        order.setTotalPrice(newTotal);
+        order.setPayType("COD");
         order.setStatus("Ordered");
-        order.setIs_pay(0);
+        order.setIsPay(0);
         orderService.addOrder(order);
         totalQuantity = 0;
         return "/web/CodNotice";
@@ -307,16 +319,16 @@ public class CartController {
 //        model.addAttribute("transactionId", transactionId);
         order.setUsername(GlobalData.RememberUser);
         order.setQuantity(totalQuantity);
-        order.setTotal_price(total);
-        order.setPay_type("Online");
+        order.setTotalPrice(newTotal);
+        order.setPayType("Online");
         order.setStatus("Delivering");
         if (paymentStatus == 1) {
-            order.setIs_pay(1);
+            order.setIsPay(1);
             orderService.addOrder(order);
             totalQuantity = 0;
             return "/web/ordersuccess";
         }
-        order.setIs_pay(0);
+        order.setIsPay(0);
         orderService.addOrder(order);
         return "/web/orderfail";
     }

@@ -38,4 +38,15 @@ public class CartService {
         }
         return cart;
     }
+
+    @Transactional
+    public void markAndRemoveCompleteCarts(List<Cart> cartList) {
+        for (Cart cart : cartList) {
+            cart.setComplete(true);
+            cartRepository.save(cart);
+        }
+
+        cartRepository.deleteByCompleteTrue();
+    }
+
 }
