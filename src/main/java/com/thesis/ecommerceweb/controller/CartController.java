@@ -216,6 +216,8 @@ public class CartController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
         List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
         List<Product> productList = new ArrayList<>();
+        List<String> productNames = new ArrayList<>();
+        StringBuilder productInfo = new StringBuilder();
         totalQuantity = 0;
         total = 0;
         for (int i = 0; i < userCarts.size(); i++) {
@@ -231,6 +233,27 @@ public class CartController {
             total += (product.getPrice() * userCarts.get(i).getQuantity());
             productList.add(cartProduct);
         }
+
+        for (Product product : productList) {
+            productNames.add(product.getName());
+
+            productInfo.append(product.getQuantity())
+                    .append(" x ")
+                    .append(product.getName())
+                    .append("[id=")
+                    .append(product.getPid())
+                    .append(", size=")
+                    .append(product.getSize())
+                    .append("], ");
+            totalQuantity += product.getQuantity();
+        }
+
+        if (productInfo.length() > 2) {
+            productInfo.delete(productInfo.length() - 2, productInfo.length());
+        }
+
+        GlobalData.orderName = productInfo.toString();
+
         model.addAttribute("total", total);
         model.addAttribute("cart", productList);
         model.addAttribute("user", userDetails);
@@ -241,8 +264,11 @@ public class CartController {
     }
 
     @PostMapping("/editDelivery")
-    public String editDelivery(@ModelAttribute("USER") UserDTO userDTO) {
-        return "redirect:/homePage";
+    public String editDelivery(@ModelAttribute("USER") UserDTO userDTO, @RequestParam("paymentMethod") String paymentMethod, Model model) {
+        if (paymentMethod.equals("COD")) {
+            return "/web/CodNotice";
+        }
+        return "/web/ordersuccess";
     }
 
     @GetMapping("/checkoutCod")

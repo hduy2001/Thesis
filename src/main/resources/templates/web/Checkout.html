@@ -265,7 +265,9 @@
                                         <input type="text" class="form-control" name="phoneNumber" placeholder="Enter phone number" th:field="*{phoneNumber}" required>
                                     </div><!-- End .col-sm-6 -->
                                 </div><!-- End .row -->
-
+                                <input type="hidden" name="role" value="USER">
+                                <input type="hidden" name="isConfirm" value="true">
+                                <input type="hidden" name="verificationCode" value="null">
                                 <label>Order notes (optional)</label>
                                 <textarea class="form-control" cols="30" rows="4"
                                           placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
@@ -311,7 +313,7 @@
                                             <div class="card-header" id="heading-1">
                                                 <h2 class="card-title">
                                                     <a role="button" data-toggle="collapse" href="#collapse-1"
-                                                       aria-expanded="true" aria-controls="collapse-1">
+                                                       aria-expanded="true" aria-controls="collapse-1" id="cash-on-delivery-link">
                                                         Cash On Delivery (COD)
                                                     </a>
                                                 </h2>
@@ -331,7 +333,7 @@
                                                 <h2 class="card-title">
                                                     <a class="collapsed" role="button" data-toggle="collapse"
                                                        href="#collapse-2" aria-expanded="false"
-                                                       aria-controls="collapse-2">
+                                                       aria-controls="collapse-2" id="vnpay-wallet-link">
                                                         VNPAY Wallet
                                                     </a>
                                                 </h2>
@@ -346,6 +348,8 @@
                                             </div><!-- End .collapse -->
                                         </div><!-- End .card -->
                                     </div><!-- End .accordion -->
+
+                                    <input type="hidden" id="payment-method" name="paymentMethod" th:value="COD" />
 
                                     <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
                                         <span class="btn-text">Place Order</span>
@@ -508,6 +512,16 @@
             }
         });
     }
+
+    $(document).ready(function () {
+        $("#cash-on-delivery-link").click(function () {
+            $("#payment-method").val("COD");
+        });
+
+        $("#vnpay-wallet-link").click(function () {
+            $("#payment-method").val("VNPay");
+        });
+    });
 </script>
 </body>
 
