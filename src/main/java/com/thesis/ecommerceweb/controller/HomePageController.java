@@ -43,9 +43,6 @@ public class HomePageController {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
-        model.addAttribute("cart", GlobalData.cart);
-        model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("total", GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
         return "web/HomePage";
     }
 

@@ -138,7 +138,6 @@ public class CartController {
         Map<String, Object> response = new HashMap<>();
         List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
         List<Product> productList = new ArrayList<>();
-        totalQuantity = 0;
         total = 0;
         for (int i = 0; i < userCarts.size(); i++) {
             Product product = productService.getProductById(userCarts.get(i).getPid()).get();
@@ -174,7 +173,6 @@ public class CartController {
         model.addAttribute("user", userDetails);
         List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
         List<Product> productList = new ArrayList<>();
-        totalQuantity = 0;
         total = 0;
         for (int i = 0; i < userCarts.size(); i++) {
             Product product = productService.getProductById(userCarts.get(i).getPid()).get();
@@ -274,7 +272,6 @@ public class CartController {
             order.setStatus("Ordered");
             order.setIsPay(0);
             orderService.addOrder(order);
-            totalQuantity = 0;
             List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
             cartService.markAndRemoveCompleteCarts(userCarts);
             return "/web/CodNotice";
@@ -282,19 +279,19 @@ public class CartController {
         return "/web/ordersuccess";
     }
 
-    @GetMapping("/checkoutCod")
-    public String checkoutCod(Order order, Principal principal) {
-        order.setUsername(principal.getName());
-        order.setDetail(GlobalData.orderName);
-        order.setQuantity(totalQuantity);
-        order.setTotalPrice(newTotal);
-        order.setPayType("COD");
-        order.setStatus("Ordered");
-        order.setIsPay(0);
-        orderService.addOrder(order);
-        totalQuantity = 0;
-        return "/web/CodNotice";
-    }
+//    @GetMapping("/checkoutCod")
+//    public String checkoutCod(Order order, Principal principal) {
+//        order.setUsername(principal.getName());
+//        order.setDetail(GlobalData.orderName);
+//        order.setQuantity(totalQuantity);
+//        order.setTotalPrice(newTotal);
+//        order.setPayType("COD");
+//        order.setStatus("Ordered");
+//        order.setIsPay(0);
+//        orderService.addOrder(order);
+//        totalQuantity = 0;
+//        return "/web/CodNotice";
+//    }
 
     //Checkout online
     @GetMapping("/checkoutOnline")
