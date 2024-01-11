@@ -146,13 +146,13 @@
                                 </div>
 
                                 <div class="product" style="justify-content: center;">
-                                    <a class="wishlist-link" th:href="@{/user/{username}(username=${user.getUsername()})}">
+                                    <a class="wishlist-link" th:href="@{/trackingOrder}">
                                         <span style="font-size: 15px;">Order</span>
                                     </a>
                                 </div>
 
                                 <div class="product" style="justify-content: center;">
-                                    <a class="wishlist-link" th:href="@{/logout}" th:if="${user != null and user.getUsername() != null}">
+                                    <a class="wishlist-link" th:href="@{/logout}">
                                         <span style="font-size: 15px;">Logout</span>
                                     </a>
                                 </div>

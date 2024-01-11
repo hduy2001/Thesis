@@ -28,4 +28,8 @@ public class OrderService {
     public Optional<Order> getOrderById(int id) {
         return orderRepository.findById(id);
     }
+
+    public List<Order> getAllOrderByUsername(String username, String status) {
+        return orderRepository.findAllByUsernameAndStatus(username, status);
+    }
 }

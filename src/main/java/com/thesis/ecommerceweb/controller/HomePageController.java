@@ -4,12 +4,10 @@ package com.thesis.ecommerceweb.controller;
 import com.thesis.ecommerceweb.dto.UserDTO;
 import com.thesis.ecommerceweb.global.GlobalData;
 import com.thesis.ecommerceweb.model.Category;
+import com.thesis.ecommerceweb.model.Order;
 import com.thesis.ecommerceweb.model.Product;
 import com.thesis.ecommerceweb.model.User;
-import com.thesis.ecommerceweb.service.CategoryService;
-import com.thesis.ecommerceweb.service.ProductService;
-import com.thesis.ecommerceweb.service.StockService;
-import com.thesis.ecommerceweb.service.UserService;
+import com.thesis.ecommerceweb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,6 +35,8 @@ public class HomePageController {
     UserDetailsService userDetailsService;
     @Autowired
     StockService stockService;
+    @Autowired
+    OrderService orderService;
 
     @GetMapping("/homePage")
     public String homePage(Model model, Principal principal){
@@ -159,6 +160,23 @@ public class HomePageController {
     public String updateUser(@ModelAttribute("USER") UserDTO userDTO) {
         userService.updateUser(userDTO);
         return "redirect:/homePage";
+    }
+
+    @GetMapping("/trackingOrder")
+    public String getTrackingOrder(Model model, Principal principal) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+
+        List<Order> ordered = orderService.getAllOrderByUsername(principal.getName(), "Ordered");
+        List<Order> delivering = orderService.getAllOrderByUsername(principal.getName(), "Delivering");
+        List<Order> success = orderService.getAllOrderByUsername(principal.getName(), "Success");
+        List<Order> canceled = orderService.getAllOrderByUsername(principal.getName(), "Canceled");
+
+        model.addAttribute("user", userDetails);
+        model.addAttribute("ordered", ordered);
+        model.addAttribute("delivering", delivering);
+        model.addAttribute("success", success);
+        model.addAttribute("canceled", canceled);
+        return "web/TrackingOrder";
     }
 
     //Login Section:
