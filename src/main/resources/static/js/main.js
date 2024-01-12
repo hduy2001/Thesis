@@ -170,25 +170,32 @@ $(document).ready(function () {
 		if (priceSlider == null) return;
 
 		noUiSlider.create(priceSlider, {
-			start: [ 0, 750 ],
+			start: [ 66000, 3740000 ],
 			connect: true,
 			step: 50,
 			margin: 200,
 			range: {
-				'min': 0,
-				'max': 1000
+				'min': 66000,
+				'max': 6050000
 			},
 			tooltips: true,
 			format: wNumb({
 		        decimals: 0,
-		        prefix: '$'
+                thousand: '.',
 		    })
 		});
 
 		// Update Price Range
-		priceSlider.noUiSlider.on('update', function( values, handle ){
-			$('#filter-price-range').text(values.join(' - '));
-		});
+        priceSlider.noUiSlider.on('update', function (values, handle) {
+            // Tạo một chuỗi mới với dấu chấm ở giữa giá trị
+            var formattedValues = values.map(function (value) {
+                var parts = value.split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                return parts.join('.');
+            });
+
+            $('#filter-price-range').text(formattedValues.join(' - '));
+        });
 	}
 
 	// Product countdown

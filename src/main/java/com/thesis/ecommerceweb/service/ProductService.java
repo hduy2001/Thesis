@@ -28,7 +28,10 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public List<Product> getAllProductsByCategoryId(int id) {
+    public List<Product> getAllProductsByCategoryId(int id, String keyword) {
+        if (keyword != null) {
+            return productRepository.search(keyword);
+        }
         return productRepository.findAllByCategory_Cid(id);
     }
 
@@ -44,4 +47,19 @@ public class ProductService {
         return productRepository.findAllByBrand(brand);
     }
 
+    public List<Product> searchProducts(String keyword) {
+        return productRepository.search(keyword);
+    }
+
+    public List<String> getAllColors() {
+        return productRepository.findAllColors();
+    }
+
+    public List<String> getAllBrands() {
+        return productRepository.findAllBrands();
+    }
+
+    public List<Integer> getAllPrices() {
+        return productRepository.findAllPrices();
+    }
 }

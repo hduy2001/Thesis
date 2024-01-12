@@ -47,21 +47,27 @@ public class HomePageController {
         return "web/HomePage";
     }
 
-    @GetMapping("/homePageAfter")
-    public String homePageAfter(Model model){
-        GlobalData.cart.clear();
-        return "web/HomePage";
+    @GetMapping("/search")
+    @ResponseBody
+    public List<Product> searchProducts(@RequestParam String keyword) {
+        List<Product> searchResults = productService.searchProducts(keyword);
+        return searchResults;
     }
 
     //ShopPage section:
     @GetMapping("/shopPage/{id}")
-    public String shoesPage(Model model, @PathVariable int id, Principal principal){
+    public String shoesPage(Model model, @PathVariable int id, Principal principal, @Param("keyword") String keyword){
         if(principal != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
         model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.getAllProductsByCategoryId(id));
+        model.addAttribute("products", productService.getAllProductsByCategoryId(id, keyword));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("allColors", productService.getAllColors());
+        model.addAttribute("brands", productService.getAllBrands());
+        model.addAttribute("sizes", stockService.getAllSizes());
+        model.addAttribute("allPrices", productService.getAllPrices());
         return "web/ShopPage";
     }
 

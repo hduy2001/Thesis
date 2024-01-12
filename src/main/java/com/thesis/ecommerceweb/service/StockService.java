@@ -24,4 +24,8 @@ public class StockService {
     public Optional<Stock> getStockOneProduct(int pid) {
         return stockRepository.findStockByPid(pid);
     }
+
+    public List<String> getAllSizes() {
+        return stockRepository.findAllSizes();
+    }
 }
