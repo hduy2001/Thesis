@@ -67,7 +67,6 @@ public class HomePageController {
         model.addAttribute("allColors", productService.getAllColors());
         model.addAttribute("brands", productService.getAllBrands());
         model.addAttribute("sizes", stockService.getAllSizes());
-        model.addAttribute("allPrices", productService.getAllPrices());
         return "web/ShopPage";
     }
 
