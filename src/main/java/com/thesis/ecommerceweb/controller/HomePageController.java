@@ -16,12 +16,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class HomePageController {
@@ -56,17 +55,32 @@ public class HomePageController {
 
     //ShopPage section:
     @GetMapping("/shopPage/{id}")
-    public String shoesPage(Model model, @PathVariable int id, Principal principal, @Param("keyword") String keyword){
+    public String shoesPage(Model model, @PathVariable int id, Principal principal, @Param("keyword") String keyword,
+                            @RequestParam(name = "selectedBrands", required = false) String selectedBrands,
+                            @RequestParam(name = "color", required = false) String color){
         if(principal != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
+
+        List<String> brandList = new ArrayList<>();
+
+        if (selectedBrands != null) {
+            String[] selectedArray = selectedBrands.split(",");
+            brandList = Arrays.asList(selectedArray);
+            model.addAttribute("selectedBrands", brandList);
+        }
+
+        if (color != null && !color.isEmpty()) {
+            model.addAttribute("selectedColor", color);
+        }
+
         model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.getAllProductsByCategoryId(id, keyword));
+        model.addAttribute("products", productService.getAllProductsByCategoryId(id, keyword, brandList, color));
         model.addAttribute("keyword", keyword);
         model.addAttribute("allColors", productService.getAllColors());
         model.addAttribute("brands", productService.getAllBrands());
-        model.addAttribute("sizes", stockService.getAllSizes());
+
         return "web/ShopPage";
     }
 

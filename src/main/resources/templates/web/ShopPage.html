@@ -263,87 +263,47 @@
                                 <label>Filters:</label>
                                 <a href="#" class="sidebar-filter-clear">Clean All</a>
                             </div><!-- End .widget widget-clean -->
+                            <form id="userSelect" method="get">
+                                <div class="widget widget-collapsible">
+                                    <h3 class="widget-title">
+                                        <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+                                            Brand
+                                        </a>
+                                    </h3><!-- End .widget-title -->
 
-                            <div class="widget widget-collapsible">
-                                <h3 class="widget-title">
-                                    <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
-                                        Brand
-                                    </a>
-                                </h3><!-- End .widget-title -->
+                                    <div class="collapse show" id="widget-1">
+                                        <div class="widget-body">
+                                            <div class="filter-items">
+                                                <!-- Thymeleaf iteration to display brands -->
+                                                <div th:each="brand, index : ${brands}" class="filter-item">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" th:id="'brand-' + ${index.index + 1}" th:value="${brand}" name="selectedBrands" th:checked="${selectedBrands != null and selectedBrands.contains(brand)}" onclick="autoSubmit()"/>
+                                                        <label class="custom-control-label" th:for="'brand-' + ${index.index + 1}" th:text="${brand}"></label>
+                                                    </div><!-- End .custom-checkbox -->
+                                                </div><!-- End .filter-item -->
+                                            </div><!-- End .filter-items -->
+                                        </div><!-- End .widget-body -->
+                                    </div><!-- End .collapse -->
+                                </div><!-- End .widget -->
 
-                                <div class="collapse show" id="widget-1">
-                                    <div class="widget-body">
-                                        <div class="filter-items">
-                                            <!-- Thymeleaf iteration to display brands -->
-                                            <div th:each="brand, index : ${brands}" class="filter-item">
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input" th:id="'brand-' + ${index.index + 1}" th:value="${brand}" />
-                                                    <label class="custom-control-label" th:for="'brand-' + ${index.index + 1}" th:text="${brand}"></label>
-                                                </div><!-- End .custom-checkbox -->
-                                            </div><!-- End .filter-item -->
-                                        </div><!-- End .filter-items -->
-                                    </div><!-- End .widget-body -->
-                                </div><!-- End .collapse -->
-                            </div><!-- End .widget -->
+                                <div class="widget widget-collapsible">
+                                    <h3 class="widget-title">
+                                        <a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true" aria-controls="widget-3">
+                                            Color
+                                        </a>
+                                    </h3><!-- End .widget-title -->
 
-                            <div class="widget widget-collapsible">
-                                <h3 class="widget-title">
-                                    <a class="collapsed" data-toggle="collapse" href="#widget-2" role="button" aria-expanded="true" aria-controls="widget-2">
-                                        Size
-                                    </a>
-                                </h3><!-- End .widget-title -->
-
-                                <div class="collapse" id="widget-2">
-                                    <div class="widget-body">
-                                        <div class="filter-items">
-                                            <div th:each="size, index : ${sizes}" class="filter-item">
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input" th:id="'size-' + ${index.index + 1}" th:value="${brand}" />
-                                                    <label class="custom-control-label" th:for="'size-' + ${index.index + 1}" th:text="${size}"></label>
-                                                </div><!-- End .custom-checkbox -->
-                                            </div><!-- End .filter-item -->
-                                        </div><!-- End .filter-items -->
-                                    </div><!-- End .widget-body -->
-                                </div><!-- End .collapse -->
-                            </div><!-- End .widget -->
-
-                            <div class="widget widget-collapsible">
-                                <h3 class="widget-title">
-                                    <a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true" aria-controls="widget-3">
-                                        Color
-                                    </a>
-                                </h3><!-- End .widget-title -->
-
-                                <div class="collapse show" id="widget-3">
-                                    <div class="widget-body">
-                                        <div class="filter-colors" style="background-color: fu">
-                                            <!-- Thymeleaf iteration to display colors -->
-                                            <a th:each="color : ${allColors}" th:href="'#'" th:style="'background: ' + ${color}"><span class="sr-only">Color Name</span></a>
-                                        </div><!-- End .filter-colors -->
-                                    </div><!-- End .widget-body -->
-                                </div><!-- End .collapse -->
-                            </div><!-- End .widget -->
-
-                            <div class="widget widget-collapsible">
-                                <h3 class="widget-title">
-                                    <a data-toggle="collapse" href="#widget-5" role="button" aria-expanded="true" aria-controls="widget-5">
-                                        Price
-                                    </a>
-                                </h3><!-- End .widget-title -->
-
-                                <div class="collapse show" id="widget-5">
-                                    <div class="widget-body">
-                                        <div class="filter-price">
-                                            <div class="filter-price-text">
-                                                Price Range:
-                                                <span id="filter-price-range"></span>
-                                            </div><!-- End .filter-price-text -->
-
-                                            <div id="price-slider"></div><!-- End #price-slider -->
-                                        </div><!-- End .filter-price -->
-                                    </div><!-- End .widget-body -->
-                                </div><!-- End .collapse -->
-                            </div><!-- End .widget -->
+                                    <div class="collapse show" id="widget-3">
+                                        <div class="widget-body">
+                                            <div class="filter-colors">
+                                                <!-- Thymeleaf iteration to display colors -->
+                                                <a class="color-link" th:each="color : ${allColors}" th:id="'colorDiv' + ${color}" th:title="${color}" th:href="'#'" th:style="'background:' + ${color}" th:attr="data-selected-color=${selectedColor}" onclick="toggleColorAndSubmit(this,event)"><span class="sr-only">Color Name</span></a>
+                                            </div><!-- End .filter-colors -->
+                                            <input type="hidden" id="selectedColorInput" name="color" />
+                                        </div><!-- End .widget-body -->
+                                    </div><!-- End .collapse -->
+                                </div><!-- End .widget -->
+                            </form>
                         </div><!-- End .sidebar sidebar-shop -->
                     </aside><!-- End .col-lg-3 -->
                 </div><!-- End .row -->
@@ -634,6 +594,74 @@
             });
         });
     });
+
+    $(document).ready(function() {
+        // Ánh xạ giá trị màu tương ứng với mỗi màu
+        var colorMappings = {
+            "cerulean": "#007BA7",
+            "fuchsia dream": "#915C83",
+            "mint foam": "#AAF0D1",
+            "noise aqua": "#21ABCD",
+            "ale brown": "#CC9966",
+            "siren red": "#EA3C53",
+            "valerian blue": "#5D8AA8",
+            "steel": "#B0C4DE",
+            "blue dawn": "#F0F8FF",
+            "sand": "#EDC9AF",
+            "dusklight": "#FF8C00",
+            "islantis": "#54626F",
+            "kingstone": "#808A87",
+            "blackinferrno": "#253529",
+            "mint canary": "#00FFCD",
+            "mint": "#3EB489",
+            "blaze": "#E68FAC",
+            "black red": "#7C0A02",
+            "blueberry": "#4F86F7"
+        };
+
+        // Lặp qua tất cả các phần tử có class "color-link"
+        $(".color-link").each(function() {
+            // Lấy giá trị color từ thuộc tính title
+            var colorValue = $(this).attr("title");
+
+            // Lấy giá trị màu mới tương ứng từ đối tượng ánh xạ
+            var newColorValue = colorMappings[colorValue];
+
+            // Kiểm tra nếu màu mới tồn tại, thì thiết lập giá trị màu mới vào thuộc tính style
+            if (newColorValue) {
+                $(this).css("background-color", newColorValue);
+            }
+        });
+
+        var selectedColor = $('[data-selected-color]').data('selected-color');
+        if (selectedColor) {
+            var newColorValue = colorMappings[selectedColor];
+            var escapedSelectedColor = selectedColor.replace(/\s/g, "\\ ");
+            var colorLink = $('#colorDiv' + escapedSelectedColor);
+
+            if (newColorValue) {
+                colorLink.css('box-shadow', '0 0 5px 2px ' + newColorValue);
+            } else {
+                colorLink.css('box-shadow', '0 0 5px 2px ' + selectedColor);
+            }
+        }
+    });
+
+    function autoSubmit() {
+        document.getElementById('userSelect').submit();
+    }
+
+    function toggleColorAndSubmit(element, event) {
+        uncheckAllBrands();
+        event.preventDefault();
+        var color = element.getAttribute('title');
+        document.getElementById('selectedColorInput').value = color;
+        autoSubmit();
+    }
+
+    function uncheckAllBrands() {
+        $('.custom-control-input').prop('checked', false);
+    }
 
 </script>
 </body>

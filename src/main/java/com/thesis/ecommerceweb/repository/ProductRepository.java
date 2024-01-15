@@ -21,4 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT DISTINCT p.brand FROM Product p WHERE p.brand IS NOT NULL")
     List<String> findAllBrands();
 
+    List<Product> findAllByCategory_CidAndBrandIn(int id, List<String> brand);
+    List<Product> findAllByCategory_CidAndColor(int id, String color);
+
 }
