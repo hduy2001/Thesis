@@ -10,6 +10,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService{
     @Autowired
@@ -36,11 +38,18 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public List<User> saveSample() {
+        return userRepository.findAll();
+    }
+
+    @Override
     public User save(UserDTO userDTO, String path) {
         User user = new User(userDTO.getUsername(), passwordEncoder.encode(userDTO.getPassword()), userDTO.getName(), userDTO.getEmail(), userDTO.getPhoneNumber(), userDTO.getAddress(), userDTO.getRole(), userDTO.getVerificationCode(), userDTO.isConfirm());
         sendEmail(user, path);
         return userRepository.save(user);
     }
+
+
 
     @Override
     public User findUserByUsername(String username) {

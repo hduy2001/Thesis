@@ -2,14 +2,14 @@ package com.thesis.ecommerceweb.controller;
 
 
 import com.thesis.ecommerceweb.dto.UserDTO;
+import com.thesis.ecommerceweb.global.ExcelWriter;
 import com.thesis.ecommerceweb.global.GlobalData;
-import com.thesis.ecommerceweb.model.Category;
-import com.thesis.ecommerceweb.model.Order;
-import com.thesis.ecommerceweb.model.Product;
-import com.thesis.ecommerceweb.model.User;
+import com.thesis.ecommerceweb.model.*;
+import com.thesis.ecommerceweb.recommenderSystem.DataFromPython;
 import com.thesis.ecommerceweb.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class HomePageController {
@@ -36,6 +38,8 @@ public class HomePageController {
     StockService stockService;
     @Autowired
     OrderService orderService;
+    @Autowired
+    FeedbackService feedbackService;
 
     @GetMapping("/homePage")
     public String homePage(Model model, Principal principal){
@@ -201,12 +205,46 @@ public class HomePageController {
     //Login Section:
     @GetMapping("/product/{id}")
     public String showProduct(@PathVariable int id, Principal principal, Model model){
+        DataFromPython dataFromPython = new DataFromPython();
+        List<Integer> pidList = dataFromPython.getDataFromPython(principal.getName());
+        List<Product> recommendProducts = new ArrayList<>();
+        List<Feedback> allRatings = feedbackService.getAllFeedBack(id);
+
         if(principal != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
+
+        for (int i = 0; i < pidList.size(); i++) {
+            recommendProducts.add(productService.getProductById(pidList.get(i)).get());
+        }
+
+        int ratingsPerPage = 5;
+
+        List<List<Feedback>> groupedRatings = ListUtils.partition(allRatings, ratingsPerPage);
+
         model.addAttribute("product", productService.getProductById(id).get());
+        model.addAttribute("recommendProducts", recommendProducts);
+        model.addAttribute("ratings", allRatings);
+        model.addAttribute("groupedRatings", groupedRatings);
+        model.addAttribute("countRatings", feedbackService.countRating(id));
         model.addAttribute("sizes", stockService.getStockByPid(id));
         return "web/Product";
     }
+
+//    @GetMapping("/saveSample")
+//    public String saveSample() {
+//        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+//        for (int i = 1; i <= 114; i++) {
+//            double rate = 0.0;
+//            List<Feedback> allRatings = feedbackService.getAllFeedBack(i);
+//            for (int j = 0; j < allRatings.size(); j++) {
+//                rate += allRatings.get(j).getRating();
+//            }
+//            double totalRate = rate / feedbackService.countRating(i);
+//            double roundedValue = Double.parseDouble(decimalFormat.format(totalRate));
+//            productService.saveRate(i, roundedValue, feedbackService.countRating(i));
+//        }
+//        return "web/index";
+//    }
 }

@@ -27,6 +27,12 @@ public class Product {
     @Column(name = "size")
     private String size;
 
+    @Column(name = "rating")
+    private Double rating;
+
+    @Column(name = "rating_count")
+    private Integer ratingCount;
+
     public int getPid() {
         return pid;
     }
@@ -113,5 +119,21 @@ public class Product {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(int ratingCount) {
+        this.ratingCount = ratingCount;
     }
 }

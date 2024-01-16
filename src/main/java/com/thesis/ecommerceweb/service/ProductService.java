@@ -66,11 +66,14 @@ public class ProductService {
         return productRepository.findAllColors();
     }
 
-    public List<String> getColorNames() {
-        return productRepository.findAllColors();
-    }
-
     public List<String> getAllBrands() {
         return productRepository.findAllBrands();
+    }
+
+    public void saveRate(int id, double rate, int count) {
+        Product existProduct = productRepository.findProductByPid(id);
+        existProduct.setRating(rate);
+        existProduct.setRatingCount(count);
+        productRepository.save(existProduct);
     }
 }

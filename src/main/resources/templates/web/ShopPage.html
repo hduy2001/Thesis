@@ -225,12 +225,12 @@
                                             <div th:text="${#strings.replace(#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT'), ',', '.').concat(' đ')}" class="product-price">
 
                                             </div><!-- End .product-price -->
-<!--                                            <div class="ratings-container">-->
-<!--                                                <div class="ratings">-->
-<!--                                                    <div class="ratings-val" style="width: 20%;"></div>&lt;!&ndash; End .ratings-val &ndash;&gt;-->
-<!--                                                </div>&lt;!&ndash; End .ratings &ndash;&gt;-->
-<!--                                                <span class="ratings-text">( 2 Reviews )</span>-->
-<!--                                            </div>&lt;!&ndash; End .rating-container &ndash;&gt;-->
+                                            <div class="ratings-container">
+                                                <div class="ratings">
+                                                    <div class="ratings-val" th:style="'width: ' + ${product.rating / 5 * 100 + '%;'}"></div><!-- End .ratings-val -->
+                                                </div><!-- End .ratings -->
+                                                <span class="ratings-text" th:text="'(' + ${product.ratingCount} + ' Reviews)'"></span>
+                                            </div><!-- End .rating-container -->
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->
                                 </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->
