@@ -149,6 +149,8 @@ public class CartController {
             cartProduct.setColor(product.getColor());
             cartProduct.setSize(userCarts.get(i).getSize());
             cartProduct.setQuantity(userCarts.get(i).getQuantity());
+            cartProduct.setRating(0.0);
+            cartProduct.setRatingCount(0);
             total += (product.getPrice() * userCarts.get(i).getQuantity());
             productList.add(cartProduct);
         }

@@ -5,6 +5,7 @@ import com.thesis.ecommerceweb.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,5 +76,59 @@ public class ProductService {
         existProduct.setRating(rate);
         existProduct.setRatingCount(count);
         productRepository.save(existProduct);
+    }
+
+    public List<Product> getListProduct(List<Integer> ids) {
+        List<Product> productList = new ArrayList<>();
+
+        for (int i = 0; i < ids.size(); i++) {
+            productList.add(productRepository.findProductByPid(ids.get(i)));
+        }
+
+        return productList;
+    }
+
+    public List<Product> getWomenList() {
+        List<Product> productList = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
+        ids.add(97);
+        ids.add(101);
+        ids.add(113);
+        ids.add(42);
+        for (int i = 0; i < ids.size(); i++) {
+            productList.add(productRepository.findProductByPid(ids.get(i)));
+        }
+        return productList;
+    }
+
+    public List<Product> getMenList() {
+        List<Product> productList = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
+        ids.add(99);
+        ids.add(100);
+        ids.add(114);
+        ids.add(1);
+        for (int i = 0; i < ids.size(); i++) {
+            productList.add(productRepository.findProductByPid(ids.get(i)));
+        }
+        return productList;
+    }
+
+    public List<Product> getShoesList(String gender) {
+        List<Product> productList = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            productList.add(productRepository.findAllByGenderAndCategory_CidOrderByRatingDesc(gender, 1).get(i));
+        }
+        return productList;
+    }
+
+    public List<Product> getAccessoriesList() {
+        List<Product> productList = new ArrayList<>();
+        productList.add(productRepository.findProductByCategory_CidOrderByRatingDesc(2).get(0));
+        productList.add(productRepository.findProductByCategory_CidOrderByRatingDesc(3).get(0));
+        productList.add(productRepository.findProductByCategory_CidOrderByRatingDesc(4).get(0));
+        productList.add(productRepository.findProductByCategory_CidOrderByRatingDesc(5).get(0));
+        productList.add(productRepository.findProductByCategory_CidOrderByRatingDesc(7).get(0));
+        return productList;
     }
 }

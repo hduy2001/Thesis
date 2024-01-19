@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     User findByVerificationCode(String code);
 
     User findUserByEmail(String email);
+
+    int countAllByRole(String role);
 }

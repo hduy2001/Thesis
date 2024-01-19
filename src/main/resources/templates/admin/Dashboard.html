@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Running Store</title>
+    <meta name="description" content="Running Store">
+
+    <!-- ========== All CSS files linkup ========= -->
+    <link rel="icon" th:href="@{/images/icons/web-icon-180.png}" type='image/x-icon' sizes="180x180"/>
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/lineicons.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/assets/css/materialdesignicons.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/assets/css/fullcalendar.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}"/>
+
+    <!-- ========= All Javascript files linkup ======== -->
+    <script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/assets/js/Chart.min.js}"></script>
+    <script th:src="@{/assets/js/dynamic-pie-chart.js}"></script>
+    <script th:src="@{/assets/js/moment.min.js}"></script>
+    <script th:src="@{/assets/js/fullcalendar.js}"></script>
+    <script th:src="@{/assets/js/jvectormap.min.js}"></script>
+    <script th:src="@{/assets/js/world-merc.js}"></script>
+    <script th:src="@{/assets/js/polyfill.js}"></script>
+</head>
+<body>
+<!-- ======== Preloader =========== -->
+<div id="preloader">
+    <div class="spinner"></div>
+</div>
+<!-- ======== Preloader =========== -->
+<!-- ======== sidebar-nav start =========== -->
+<aside class="sidebar-nav-wrapper">
+    <div class="navbar-logo">
+        <a th:href="@{/admin}">
+            <img th:src="@{/images/icons/web-logo.png}" alt="Logo" width="180" height="28" />
+        </a>
+    </div>
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item nav-item active">
+                <a
+                        href="#0"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#ddmenu_1"
+                        aria-controls="ddmenu_1"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                >
+              <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                          d="M8.74999 18.3333C12.2376 18.3333 15.1364 15.8128 15.7244 12.4941C15.8448 11.8143 15.2737 11.25 14.5833 11.25H9.99999C9.30966 11.25 8.74999 10.6903 8.74999 10V5.41666C8.74999 4.7263 8.18563 4.15512 7.50586 4.27556C4.18711 4.86357 1.66666 7.76243 1.66666 11.25C1.66666 15.162 4.83797 18.3333 8.74999 18.3333Z"/>
+                  <path
+                          d="M17.0833 10C17.7737 10 18.3432 9.43708 18.2408 8.75433C17.7005 5.14918 14.8508 2.29947 11.2457 1.75912C10.5629 1.6568 10 2.2263 10 2.91665V9.16666C10 9.62691 10.3731 10 10.8333 10H17.0833Z"/>
+                </svg>
+              </span>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item nav-item-has-children">
+                <a
+                        href="#0"
+                        class="collapsed"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#ddmenu_2"
+                        aria-controls="ddmenu_2"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                >
+              <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.7,7C20.4,7.4 20,7.7 20,8C20,8.3 20.3,8.6 20.6,9C21.1,9.5 21.6,9.9 21.5,10.4C21.5,10.9 21,11.4 20.5,11.9L16.4,16L15,14.7L19.2,10.5L18.2,9.5L16.8,10.9L13,7.1L17,3.3C17.4,2.9 18,2.9 18.4,3.3L20.7,5.6C21.1,6 21.1,6.7 20.7,7M3,17.2L12.6,7.6L16.3,11.4L6.8,21H3V17.2M7,2V5H10V7H7V10H5V7H2V5H5V2H7Z"/>
+                </svg>
+              </span>
+                    <span class="text">Add/Edit</span>
+                </a>
+                <ul id="ddmenu_2" class="collapse dropdown-nav">
+                    <li>
+                        <a th:href="@{/admin/categories}"> Categories </a>
+                    </li>
+                    <li class="mt-3">
+                        <a th:href="@{/admin/products}"> Products </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a th:href="@{/admin/orders}">
+              <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                          d="M17,18C15.89,18 15,18.89 15,20A2,2 0 0,0 17,22A2,2 0 0,0 19,20C19,18.89 18.1,18 17,18M1,2V4H3L6.6,11.59L5.24,14.04C5.09,14.32 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42A0.25,0.25 0 0,1 7.17,14.75C7.17,14.7 7.18,14.66 7.2,14.63L8.1,13H15.55C16.3,13 16.96,12.58 17.3,11.97L20.88,5.5C20.95,5.34 21,5.17 21,5A1,1 0 0,0 20,4H5.21L4.27,2M7,18C5.89,18 5,18.89 5,20A2,2 0 0,0 7,22A2,2 0 0,0 9,20C9,18.89 8.1,18 7,18Z"/>
+                </svg>
+              </span>
+                    <span class="text">Orders</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a th:href="@{/admin/blank}">
+              <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                          d="M3.33334 3.35442C3.33334 2.4223 4.07954 1.66666 5.00001 1.66666H15C15.9205 1.66666 16.6667 2.4223 16.6667 3.35442V16.8565C16.6667 17.5519 15.8827 17.9489 15.3333 17.5317L13.8333 16.3924C13.537 16.1673 13.1297 16.1673 12.8333 16.3924L10.5 18.1646C10.2037 18.3896 9.79634 18.3896 9.50001 18.1646L7.16668 16.3924C6.87038 16.1673 6.46298 16.1673 6.16668 16.3924L4.66668 17.5317C4.11731 17.9489 3.33334 17.5519 3.33334 16.8565V3.35442ZM4.79168 5.04218C4.79168 5.39173 5.0715 5.6751 5.41668 5.6751H10C10.3452 5.6751 10.625 5.39173 10.625 5.04218C10.625 4.69264 10.3452 4.40927 10 4.40927H5.41668C5.0715 4.40927 4.79168 4.69264 4.79168 5.04218ZM5.41668 7.7848C5.0715 7.7848 4.79168 8.06817 4.79168 8.41774C4.79168 8.76724 5.0715 9.05066 5.41668 9.05066H10C10.3452 9.05066 10.625 8.76724 10.625 8.41774C10.625 8.06817 10.3452 7.7848 10 7.7848H5.41668ZM4.79168 11.7932C4.79168 12.1428 5.0715 12.4262 5.41668 12.4262H10C10.3452 12.4262 10.625 12.1428 10.625 11.7932C10.625 11.4437 10.3452 11.1603 10 11.1603H5.41668C5.0715 11.1603 4.79168 11.4437 4.79168 11.7932ZM13.3333 4.40927C12.9882 4.40927 12.7083 4.69264 12.7083 5.04218C12.7083 5.39173 12.9882 5.6751 13.3333 5.6751H14.5833C14.9285 5.6751 15.2083 5.39173 15.2083 5.04218C15.2083 4.69264 14.9285 4.40927 14.5833 4.40927H13.3333ZM12.7083 8.41774C12.7083 8.76724 12.9882 9.05066 13.3333 9.05066H14.5833C14.9285 9.05066 15.2083 8.76724 15.2083 8.41774C15.2083 8.06817 14.9285 7.7848 14.5833 7.7848H13.3333C12.9882 7.7848 12.7083 8.06817 12.7083 8.41774ZM13.3333 11.1603C12.9882 11.1603 12.7083 11.4437 12.7083 11.7932C12.7083 12.1428 12.9882 12.4262 13.3333 12.4262H14.5833C14.9285 12.4262 15.2083 12.1428 15.2083 11.7932C15.2083 11.4437 14.9285 11.1603 14.5833 11.1603H13.3333Z"/>
+                </svg>
+              </span>
+                    <span class="text">Invoice</span>
+                </a>
+            </li>
+
+            <span class="divider"><hr/></span>
+
+            <li class="nav-item">
+                <a th:href="@{/admin/addManager}">
+              <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z"/>
+                </svg>
+              </span>
+                    <span class="text">Add New Manager</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+<!-- ======== sidebar-nav end =========== -->
+<div class="overlay"></div>
+<!-- ======== main-wrapper start =========== -->
+<main class="main-wrapper">
+    <!-- ========== header start ========== -->
+    <header class="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-6">
+                    <div class="header-left d-flex align-items-center">
+                        <div class="menu-toggle-btn mr-15">
+                            <button id="menu-toggle" class="main-btn primary-btn btn-hover">
+                                <i class="lni lni-chevron-left me-2"></i> Menu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 col-md-7 col-6">
+                    <div class="header-right">
+                        <!-- profile start -->
+                        <div class="profile-box ml-15">
+                            <button class="dropdown-toggle bg-transparent border-0" type="button" id="profile"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="profile-info">
+                                    <div class="info">
+                                        <div class="image">
+                                            <img th:src="@{/assets/images/profile/profile-image-2.jpg}" alt=""/>
+                                        </div>
+                                        <div>
+                                            <h6 th:text="${name}" class="fw-500"></h6>
+                                            <p th:text="${user.role}"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
+                                <li>
+                                    <div class="author-info flex items-center !p-1">
+                                        <div class="content">
+                                            <h4 th:text="${user.name}" class="text-sm"></h4>
+                                            <h6 th:text="${user.email}"></h6>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a th:href="@{/admin/profile}">
+                                        <i class="lni lni-user"></i> View Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/logout}"> <i class="lni lni-exit"></i> Sign Out </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- profile end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ========== header end ========== -->
+
+    <!-- ========== section start ========== -->
+    <section class="section">
+        <div class="container-fluid">
+            <!-- ========== title-wrapper start ========== -->
+            <div class="title-wrapper pt-30">
+                <div class="row align-items-center">
+                    <!-- end col -->
+                    <div class="col-md-6">
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- ========== title-wrapper end ========== -->
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-sm-6">
+                    <div class="icon-card mb-30">
+                        <div class="icon purple">
+                            <i class="lni lni-cart-full"></i>
+                        </div>
+                        <div class="content">
+                            <h6 class="mb-10">Total Orders</h6>
+                            <h3 class="text-bold mb-10" th:text="${totalOrders}"></h3>
+                        </div>
+                    </div>
+                    <!-- End Icon Cart -->
+                </div>
+                <!-- End Col -->
+
+                <div class="col-xl-4 col-lg-4 col-sm-6">
+                    <div class="icon-card mb-30">
+                        <div class="icon success">
+                            <i class="lni lni-dollar"></i>
+                        </div>
+                        <div class="content">
+                            <h6 class="mb-10">Total Income</h6>
+                            <h3 class="text-bold mb-10" th:text="${#strings.replace(#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT'), ',', '.').concat(' đ')}"></h3>
+                        </div>
+                    </div>
+                    <!-- End Icon Cart -->
+                </div>
+                <!-- End Col -->
+
+                <div class="col-xl-4 col-lg-4 col-sm-6">
+                    <div class="icon-card mb-30">
+                        <div class="icon orange">
+                            <i class="lni lni-user"></i>
+                        </div>
+                        <div class="content">
+                            <h6 class="mb-10">Total User</h6>
+                            <h3 class="text-bold mb-10" th:text="${totalUser}"></h3>
+                        </div>
+                    </div>
+                    <!-- End Icon Cart -->
+                </div>
+                <!-- End Col -->
+            </div>
+            <!-- End Row -->
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="card-style mb-30">
+                        <div class="title d-flex flex-wrap justify-content-between">
+                            <div class="left">
+                                <h6 class="text-medium mb-10">Yearly Stats</h6>
+                                <h3 class="text-bold" th:text="${#strings.replace(#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT'), ',', '.')}"></h3>
+                            </div>
+                            <div class="right">
+                            </div>
+                        </div>
+                        <!-- End Title -->
+                        <div class="chart">
+                            <canvas id="Chart1" style="width: 100%; height: 400px; margin-left: -35px;"></canvas>
+                        </div>
+                        <!-- End Chart -->
+                    </div>
+                </div>
+                <!-- End Col -->
+                <div class="col-lg-5">
+                    <div class="card-style mb-30">
+                        <div class="title d-flex flex-wrap align-items-center justify-content-between">
+                            <div class="left">
+                                <h6 class="text-medium mb-30">Sales/Revenue</h6>
+                            </div>
+                            <div class="right">
+                            </div>
+                        </div>
+                        <!-- End Title -->
+                        <div class="chart">
+                            <canvas id="Chart2" style="width: 100%; height: 400px; margin-left: -45px;"></canvas>
+                        </div>
+                        <!-- End Chart -->
+                    </div>
+                </div>
+                <!-- End Col -->
+            </div>
+            <!-- End Row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-style mb-30">
+                        <div class="title d-flex flex-wrap justify-content-between align-items-center">
+                            <div class="left">
+                                <h6 class="text-medium mb-30">Top Selling Products</h6>
+                            </div>
+
+                        </div>
+                        <!-- End Title -->
+                        <div class="table-responsive">
+                            <table class="table top-selling-table">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <h6 class="text-sm text-medium">Products</h6>
+                                    </th>
+                                    <th class="min-width">
+                                        <h6 class="text-sm text-medium">Name</h6>
+                                    </th>
+                                    <th class="min-width">
+                                        <h6 class="text-sm text-medium">Price</h6>
+                                    </th>
+                                    <th class="min-width">
+                                        <h6 class="text-sm text-medium">Color</h6>
+                                    </th>
+                                    <th class="min-width">
+                                        <h6 class="text-sm text-medium">Gender</h6>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="product: ${productList}">
+                                    <td>
+                                        <div class="product">
+                                            <div class="image">
+                                                <img th:src="@{${'/images/products/' + product.image}}" alt="Product image" class="product-image">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm" th:text="${product.name}"></p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm" th:text="${#strings.replace(#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT'), ',', '.').concat(' đ')}"></p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm" th:text="${product.color}"></p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm" th:text="${product.gender}"></p>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <!-- End Table -->
+                        </div>
+                    </div>
+                </div>
+                <!-- End Col -->
+            </div>
+            <!-- End Row -->
+        </div>
+        <!-- end container -->
+    </section>
+    <!-- ========== section end ========== -->
+
+    <!-- ========== footer start =========== -->
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 text-center">
+                    <div class="copyright text-center">
+                        <h2 class="text-sm">
+                            Developed by Nguyen Hoang Duy - ITITIU19111
+                        </h2>
+                    </div>
+                </div>
+                <!-- end col-->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </footer>
+    <!-- ========== footer end =========== -->
+</main>
+<!-- ======== main-wrapper end =========== -->
+<script th:src="@{/assets/js/main.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var dataValues = /*[[${dataValues}]]*/ [];
+    // =========== chart one start
+    const ctx1 = document.getElementById("Chart1").getContext("2d");
+    const chart1 = new Chart(ctx1, {
+        type: "line",
+        data: {
+            labels: [
+                "Jan",
+                "Fab",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+            ],
+            datasets: [
+                {
+                    label: "",
+                    backgroundColor: "transparent",
+                    borderColor: "#365CF5",
+                    data: dataValues,
+                    pointBackgroundColor: "transparent",
+                    pointHoverBackgroundColor: "#365CF5",
+                    pointBorderColor: "transparent",
+                    pointHoverBorderColor: "#fff",
+                    pointHoverBorderWidth: 5,
+                    borderWidth: 5,
+                    pointRadius: 8,
+                    pointHoverRadius: 8,
+                    cubicInterpolationMode: "monotone", // Add this line for curved line
+                },
+            ],
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        labelColor: function (context) {
+                            return {
+                                backgroundColor: "#ffffff",
+                                color: "#171717"
+                            };
+                        },
+                    },
+                    intersect: false,
+                    backgroundColor: "#f9f9f9",
+                    title: {
+                        fontFamily: "Plus Jakarta Sans",
+                        color: "#8F92A1",
+                        fontSize: 12,
+                    },
+                    body: {
+                        fontFamily: "Plus Jakarta Sans",
+                        color: "#171717",
+                        fontStyle: "bold",
+                        fontSize: 16,
+                    },
+                    multiKeyBackground: "transparent",
+                    displayColors: false,
+                    padding: {
+                        x: 30,
+                        y: 10,
+                    },
+                    bodyAlign: "center",
+                    titleAlign: "center",
+                    titleColor: "#8F92A1",
+                    bodyColor: "#171717",
+                    bodyFont: {
+                        family: "Plus Jakarta Sans",
+                        size: "16",
+                        weight: "bold",
+                    },
+                },
+                legend: {
+                    display: false,
+                },
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: false,
+            },
+            scales: {
+                y: {
+                    grid: {
+                        display: false,
+                        drawTicks: false,
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        padding: 35,
+                        max: 1200,
+                        min: 500,
+                    },
+                },
+                x: {
+                    grid: {
+                        drawBorder: false,
+                        color: "rgba(143, 146, 161, .1)",
+                        zeroLineColor: "rgba(143, 146, 161, .1)",
+                    },
+                    ticks: {
+                        padding: 20,
+                    },
+                },
+            },
+        },
+    });
+    // =========== chart one end
+
+    // =========== chart two start
+    const ctx2 = document.getElementById("Chart2").getContext("2d");
+    const chart2 = new Chart(ctx2, {
+        type: "bar",
+        data: {
+            labels: [
+                "Jan",
+                "Fab",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+            ],
+            datasets: [
+                {
+                    label: "",
+                    backgroundColor: "#365CF5",
+                    borderRadius: 30,
+                    barThickness: 6,
+                    maxBarThickness: 8,
+                    data: dataValues,
+                },
+            ],
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        titleColor: function (context) {
+                            return "#8F92A1";
+                        },
+                        label: function (context) {
+                            let label = context.dataset.label || "";
+
+                            if (label) {
+                                label += ": ";
+                            }
+                            label += context.parsed.y;
+                            return label;
+                        },
+                    },
+                    backgroundColor: "#F3F6F8",
+                    titleAlign: "center",
+                    bodyAlign: "center",
+                    titleFont: {
+                        size: 12,
+                        weight: "bold",
+                        color: "#8F92A1",
+                    },
+                    bodyFont: {
+                        size: 16,
+                        weight: "bold",
+                        color: "#171717",
+                    },
+                    displayColors: false,
+                    padding: {
+                        x: 30,
+                        y: 10,
+                    },
+                },
+            },
+            legend: {
+                display: false,
+            },
+            legend: {
+                display: false,
+            },
+            layout: {
+                padding: {
+                    top: 15,
+                    right: 15,
+                    bottom: 15,
+                    left: 15,
+                },
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    grid: {
+                        display: false,
+                        drawTicks: false,
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        padding: 35,
+                        max: 1200,
+                        min: 0,
+                    },
+                },
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false,
+                        color: "rgba(143, 146, 161, .1)",
+                        drawTicks: false,
+                        zeroLineColor: "rgba(143, 146, 161, .1)",
+                    },
+                    ticks: {
+                        padding: 20,
+                    },
+                },
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: false,
+                },
+            },
+        },
+    });
+    // =========== chart two end
+    /*]]>*/
+</script>
+</body>
+</html>

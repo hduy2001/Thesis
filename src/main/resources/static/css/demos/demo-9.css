@@ -534,36 +534,6 @@ hr {
     border-color: #c96
 }
 
-.footer {
-    background-color: #222
-}
-
-.footer .footer-logo {
-    margin-top: 0
-}
-
-.footer .footer-middle {
-    border-top: none;
-    padding-top: 6rem
-}
-
-.footer .widget-about-title {
-    color: #fff
-}
-
-.footer .widget-about-info a {
-    color: #c96
-}
-
-.footer .widget-title {
-    letter-spacing: .01em;
-    color: #fff
-}
-
-.footer-bottom .container:before, .footer-bottom .container-fluid:before {
-    background-color: #444
-}
-
 @media screen and (min-width: 768px) {
     .intro-content .btn {
         margin-top: 1rem

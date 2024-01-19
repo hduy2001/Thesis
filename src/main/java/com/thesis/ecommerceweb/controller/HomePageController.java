@@ -47,6 +47,14 @@ public class HomePageController {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
+        List<Product> womenList = productService.getWomenList();
+        List<Product> MenList = productService.getMenList();
+        model.addAttribute("womenList", womenList);
+        model.addAttribute("menList", MenList);
+        model.addAttribute("womenShoesList", productService.getShoesList("Women"));
+        model.addAttribute("menShoesList", productService.getShoesList("Men"));
+        model.addAttribute("accessoriesList", productService.getAccessoriesList());
+        model.addAttribute("products", productService.getAllProduct());
         return "web/HomePage";
     }
 
@@ -231,20 +239,4 @@ public class HomePageController {
         model.addAttribute("sizes", stockService.getStockByPid(id));
         return "web/Product";
     }
-
-//    @GetMapping("/saveSample")
-//    public String saveSample() {
-//        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-//        for (int i = 1; i <= 114; i++) {
-//            double rate = 0.0;
-//            List<Feedback> allRatings = feedbackService.getAllFeedBack(i);
-//            for (int j = 0; j < allRatings.size(); j++) {
-//                rate += allRatings.get(j).getRating();
-//            }
-//            double totalRate = rate / feedbackService.countRating(i);
-//            double roundedValue = Double.parseDouble(decimalFormat.format(totalRate));
-//            productService.saveRate(i, roundedValue, feedbackService.countRating(i));
-//        }
-//        return "web/index";
-//    }
 }

@@ -1,5 +1,6 @@
 package com.thesis.ecommerceweb.dto;
 
+import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
@@ -13,4 +14,8 @@ public class ProductDTO {
     private String color;
     private String gender;
     private int cid;
+    private String size;
+    private Double rating;
+    private Integer ratingCount;
+    private int quantity;
 }
