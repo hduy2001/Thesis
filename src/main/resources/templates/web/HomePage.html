@@ -44,12 +44,13 @@
                 <div class="header-left">
                     <div class="header-search header-search-extended header-search-visible d-none d-lg-block">
                         <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
-                        <form action="#" method="get">
+                        <form method="get">
                             <div class="header-search-wrapper search-wrapper-wide">
-                                <label for="q" class="sr-only">Search</label>
+                                <label for="searchFunction" class="sr-only">Search</label>
                                 <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-                                <input type="search" class="form-control" name="q" id="q"
-                                       placeholder="Search product ..." required>
+                                <input name="keyword" id="searchFunction" type="search" class="form-control" autocomplete="off"
+                                       placeholder="Search product ...">
+                                <div id="search-results-dropdown" class="dropdown-menu" style="width: 265px;  border-top: none;"></div>
                             </div><!-- End .header-search-wrapper -->
                         </form>
                     </div><!-- End .header-search -->
@@ -550,7 +551,7 @@
                                     <h4 class="text-white"></h4>
                                 </div>
 
-                                <a href="#0" class="btn btn-outline-white banner-link">Shop Now</a>
+                                <a th:href="@{/shopPage/1}" class="btn btn-outline-white banner-link">Shop Now</a>
                             </div>
                         </div>
                     </div><!-- End .banner banner-overlay -->
@@ -699,7 +700,7 @@
                                 <div class="product-cat">
                                     <h4 class="text-white">Sale</h4>
                                 </div>
-                                <a href="#" class="btn btn-outline-white banner-link">Shop Now</a>
+                                <a th:href="@{/shopPage/7}" class="btn btn-outline-white banner-link">Shop Now</a>
                             </div>
                         </div>
                     </div><!-- End .banner banner-overlay -->
@@ -872,7 +873,7 @@
             $(".stock").text(0);
         } else {
             $(".btn-group-size").hide();
-            $(".stock").text("Số lượng tồn kho: " + getSizeStock(null)); // Sử dụng giá trị của sizes[0] hoặc giá trị mặc định khác nếu cần
+            $(".stock").text("Số lượng tồn kho: " + getSizeStock("0")); // Sử dụng giá trị của sizes[0] hoặc giá trị mặc định khác nếu cần
         }
     }
 
@@ -972,6 +973,38 @@
             }
         });
     }
+
+    $(document).ready(function() {
+        $('#searchFunction').keyup(function() {
+            var keyword = $(this).val();
+            var dropdown = $('#search-results-dropdown');
+            $.ajax({
+                type: 'GET',
+                url: '/search', // Update the URL to your actual search endpoint
+                data: { keyword: keyword },
+                success: function(response) {
+                    dropdown.empty();
+
+                    // Append new search results as dropdown items
+                    $.each(response, function(_, item) {
+                        var dropdownItem = $('<a class="dropdown-item d-flex align-items-center" href="/product/' + item.pid + '">' +
+                            '<img src="/images/products/' + item.image + '" alt="' + item.name + '" width="60" height="60" class="mr-2">' +
+                            '<span class="item-text">' + item.name + '</span>' +
+                            '</a>');
+                        dropdown.append(dropdownItem);
+                    });
+
+                    // Show the dropdown if there are results
+                    if (response.length > 0 || keyword.trim() !== '') {
+                        dropdown.show();
+                    }
+                    else {
+                        dropdown.hide();
+                    }
+                }
+            });
+        });
+    });
 </script>
 </body>
 

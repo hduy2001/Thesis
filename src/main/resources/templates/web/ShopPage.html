@@ -261,7 +261,7 @@
                         <div class="sidebar sidebar-shop">
                             <div class="widget widget-clean">
                                 <label>Filters:</label>
-                                <a href="#" class="sidebar-filter-clear">Clean All</a>
+                                <a href="#" class="sidebar-filter-clear" id="cleanAllBtn">Clean All</a>
                             </div><!-- End .widget widget-clean -->
                             <form id="userSelect" method="get">
                                 <div class="widget widget-collapsible">
@@ -277,7 +277,7 @@
                                                 <!-- Thymeleaf iteration to display brands -->
                                                 <div th:each="brand, index : ${brands}" class="filter-item">
                                                     <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" th:id="'brand-' + ${index.index + 1}" th:value="${brand}" name="selectedBrands" th:checked="${selectedBrands != null and selectedBrands.contains(brand)}" onclick="autoSubmit()"/>
+                                                        <input type="checkbox" class="custom-control-input" th:id="'brand-' + ${index.index + 1}" th:value="${brand}" name="selectedBrands" th:checked="${selectedBrands != null and selectedBrands.contains(brand)}" onclick="handleCheckboxChange(this)"/>
                                                         <label class="custom-control-label" th:for="'brand-' + ${index.index + 1}" th:text="${brand}"></label>
                                                     </div><!-- End .custom-checkbox -->
                                                 </div><!-- End .filter-item -->
@@ -590,6 +590,13 @@
         }
     });
 
+    function handleCheckboxChange(checkbox) {
+        if (!checkbox.checked) {
+            checkbox.checked = true;
+        }
+        autoSubmit();
+    }
+
     function autoSubmit() {
         document.getElementById('userSelect').submit();
     }
@@ -599,12 +606,24 @@
         event.preventDefault();
         var color = element.getAttribute('title');
         document.getElementById('selectedColorInput').value = color;
+        console.log(color);
         autoSubmit();
     }
 
     function uncheckAllBrands() {
         $('.custom-control-input').prop('checked', false);
     }
+
+    document.getElementById('cleanAllBtn').addEventListener('click', function() {
+        // Thực hiện hành động khi bấm vào nút "Clean All"
+        var baseUrl = window.location.origin + window.location.pathname;
+
+        // In ra console để kiểm tra
+        console.log('Base URL:', baseUrl);
+
+        // Nếu bạn muốn chuyển hướng trang, bạn có thể sử dụng window.location.href
+        window.location.href = baseUrl;
+    });
 
 </script>
 </body>

@@ -24,6 +24,15 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     List<Product> findAllByCategory_CidAndBrandIn(int id, List<String> brand);
     List<Product> findAllByCategory_CidAndColor(int id, String color);
+
+    List<Product> findAllByGenderAndCategory_CidAndBrandIn(String gender, int id, List<String> brand);
+    List<Product> findAllByGenderAndCategory_CidAndColor(String gender, int id, String color);
+
+    List<Product> findAllByGenderAndBrandAndCategory_CidAndColor(String gender, String brand, int id, String color);
+
+    List<Product> findAllByBrandIn(List<String> brand);
+    List<Product> findAllByBrandAndColor(String brand, String color);
+
     List<Product> findAllByGenderAndCategory_CidOrderByRatingDesc(String gender, int id);
     List<Product> findProductByCategory_CidOrderByRatingDesc(int id);
 }

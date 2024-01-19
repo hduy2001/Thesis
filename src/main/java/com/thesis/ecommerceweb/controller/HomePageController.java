@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -42,11 +43,12 @@ public class HomePageController {
     FeedbackService feedbackService;
 
     @GetMapping("/homePage")
-    public String homePage(Model model, Principal principal){
+    public String homePage(Model model, Principal principal, @Param("keyword") String keyword){
         if(principal != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
+
         List<Product> womenList = productService.getWomenList();
         List<Product> MenList = productService.getMenList();
         model.addAttribute("womenList", womenList);
@@ -55,6 +57,7 @@ public class HomePageController {
         model.addAttribute("menShoesList", productService.getShoesList("Men"));
         model.addAttribute("accessoriesList", productService.getAccessoriesList());
         model.addAttribute("products", productService.getAllProduct());
+        model.addAttribute("keyword", keyword);
         return "web/HomePage";
     }
 
@@ -97,34 +100,88 @@ public class HomePageController {
     }
 
     @GetMapping("/shopPage/{gender}/{id}")
-    public String shoesPageGender(Model model, @PathVariable String gender, @PathVariable int id, Principal principal){
+    public String shoesPageGender(Model model, @PathVariable String gender, @PathVariable int id, Principal principal, @Param("keyword") String keyword,
+                                  @RequestParam(name = "selectedBrands", required = false) String selectedBrands,
+                                  @RequestParam(name = "color", required = false) String color){
         if (principal != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
+
+        List<String> brandList = new ArrayList<>();
+
+        if (selectedBrands != null) {
+            String[] selectedArray = selectedBrands.split(",");
+            brandList = Arrays.asList(selectedArray);
+            model.addAttribute("selectedBrands", brandList);
+        }
+
+        if (color != null && !color.isEmpty()) {
+            model.addAttribute("selectedColor", color);
+        }
         model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.getAllProductsByGender(gender, id));
+        model.addAttribute("products", productService.getAllProductsByGender(gender, id, keyword, brandList, color));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("allColors", productService.getAllColors());
+        model.addAttribute("brands", productService.getAllBrands());
         return "web/ShopPage";
     }
 
     @GetMapping("/shopPage/{gender}/{brand}/{id}")
-    public String shoesPageBrand(Model model, @PathVariable String gender, @PathVariable String brand, @PathVariable int id, Principal principal){
+    public String shoesPageBrand(Model model, @PathVariable String gender, @PathVariable String brand, @PathVariable int id, Principal principal,
+                                 @Param("keyword") String keyword,
+                                 @RequestParam(name = "selectedBrands", required = false) String selectedBrands,
+                                 @RequestParam(name = "color", required = false) String color){
         if (principal != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
+
+        List<String> brandList = new ArrayList<>();
+
+        if (selectedBrands != null) {
+            String[] selectedArray = selectedBrands.split(",");
+            brandList = Arrays.asList(selectedArray);
+            model.addAttribute("selectedBrands", brandList);
+        }
+
+        if (color != null && !color.isEmpty()) {
+            model.addAttribute("selectedColor", color);
+        }
+
         model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.getAllProductsByGenderAndBrand(gender, brand, id));
+        model.addAttribute("products", productService.getAllProductsByGenderAndBrand(gender, brand, id, keyword, brandList, color));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("allColors", productService.getAllColors());
+        model.addAttribute("brands", productService.getAllBrands());
         return "web/ShopPage";
     }
 
     @GetMapping("/shopPageBrand/{brand}")
-    public String shopPageBrand(Model model, @PathVariable String brand, Principal principal){
+    public String shopPageBrand(Model model, @PathVariable String brand, Principal principal, @Param("keyword") String keyword,
+                                @RequestParam(name = "selectedBrands", required = false) String selectedBrands,
+                                @RequestParam(name = "color", required = false) String color){
         if (principal != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
             model.addAttribute("user", userDetails);
         }
-        model.addAttribute("products", productService.getAllProductsByBrand(brand));
+
+        List<String> brandList = new ArrayList<>();
+
+        if (selectedBrands != null) {
+            String[] selectedArray = selectedBrands.split(",");
+            brandList = Arrays.asList(selectedArray);
+            model.addAttribute("selectedBrands", brandList);
+        }
+
+        if (color != null && !color.isEmpty()) {
+            model.addAttribute("selectedColor", color);
+        }
+
+        model.addAttribute("products", productService.getAllProductsByBrand(brand, keyword, brandList, color));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("allColors", productService.getAllColors());
+        model.addAttribute("brands", productService.getAllBrands());
         return "web/ShopPage";
     }
 
@@ -210,7 +267,25 @@ public class HomePageController {
         return "web/TrackingOrder";
     }
 
-    //Login Section:
+    @GetMapping("/getOrderedProduct")
+    @ResponseBody
+    public List<Product> getOrderedProduct(@RequestParam int oid) {
+        List<Product> productList = new ArrayList<>();
+        Order order = orderService.getOrderById(oid).get();
+        List<Integer> idsList = GlobalData.extractUniqueIds(order.getDetail());
+        productList.addAll(productService.getListProduct(idsList));
+        return productList;
+    }
+
+    @PostMapping("/submitRating")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> submitRating(@RequestParam int pid, @RequestParam Double rating, Principal principal) {
+        Map<String, Object> response = new HashMap<>();
+        feedbackService.addFeedback(pid, principal.getName(), rating, System.currentTimeMillis());
+        return ResponseEntity.ok(response);
+    }
+
+    //Product Section:
     @GetMapping("/product/{id}")
     public String showProduct(@PathVariable int id, Principal principal, Model model){
         DataFromPython dataFromPython = new DataFromPython();

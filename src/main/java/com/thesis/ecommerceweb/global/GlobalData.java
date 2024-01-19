@@ -2,7 +2,9 @@ package com.thesis.ecommerceweb.global;
 
 import com.thesis.ecommerceweb.model.Product;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,5 +42,15 @@ public class GlobalData {
             sizes.add(matcher.group(1));
         }
         return sizes;
+    }
+
+    public static List<Integer> extractUniqueIds(String input) {
+        Set<Integer> uniqueIds = new HashSet<>();
+        Matcher matcher = Pattern.compile("id=(\\d+)").matcher(input);
+
+        while (matcher.find()) {
+            uniqueIds.add(Integer.parseInt(matcher.group(1)));
+        }
+        return new ArrayList<>(uniqueIds);
     }
 }

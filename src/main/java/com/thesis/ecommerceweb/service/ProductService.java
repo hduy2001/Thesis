@@ -45,17 +45,49 @@ public class ProductService {
         return productRepository.findAllByCategory_Cid(id);
     }
 
-    public List<Product> getAllProductsByGender(String gender, int id) {
+    public List<Product> getAllProductsByGender(String gender, int id, String keyword, List<String> brand, String color) {
+        if (keyword != null) {
+            return productRepository.search(keyword);
+        }
 
+        if (brand.size()>0 && brand != null) {
+            return productRepository.findAllByGenderAndCategory_CidAndBrandIn(gender, id, brand);
+        }
+
+        if (color != null) {
+            return productRepository.findAllByGenderAndCategory_CidAndColor(gender, id, color);
+        }
 
         return productRepository.findAllByGenderAndCategory_Cid(gender, id);
     }
 
-    public List<Product> getAllProductsByGenderAndBrand(String gender, String brand, int id) {
+    public List<Product> getAllProductsByGenderAndBrand(String gender, String brand, int id, String keyword, List<String> brands, String color) {
+        if (keyword != null) {
+            return productRepository.search(keyword);
+        }
+
+        if (brands.size()>0 && brand != null) {
+            return productRepository.findAllByGenderAndCategory_CidAndBrandIn(gender, id, brands);
+        }
+
+        if (color != null) {
+            return productRepository.findAllByGenderAndBrandAndCategory_CidAndColor(gender, brand, id, color);
+        }
         return productRepository.findAllByGenderAndBrandAndCategory_Cid(gender, brand, id);
     }
 
-    public List<Product> getAllProductsByBrand(String brand) {
+    public List<Product> getAllProductsByBrand(String brand, String keyword, List<String> brands, String color) {
+        if (keyword != null) {
+            return productRepository.search(keyword);
+        }
+
+        if (brands.size()>0 && brand != null) {
+            return productRepository.findAllByBrandIn(brands);
+        }
+
+        if (color != null) {
+            return productRepository.findAllByBrandAndColor(brand, color);
+        }
         return productRepository.findAllByBrand(brand);
     }
 

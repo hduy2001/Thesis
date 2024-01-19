@@ -52,32 +52,6 @@ public class CartController {
     @Autowired
     UserDetailsService userDetailsService;
 
-    @GetMapping("/addToCart/{id}")
-    public String addToCart(@PathVariable int id) {
-        int index = -1;
-        for (int i = 0; i < GlobalData.cart.size(); i++) {
-            if (id == GlobalData.cart.get(i).getPid()) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index != -1) {
-            // Product found in cart
-            Product product = GlobalData.cart.get(index);
-            int newQuantity = product.getQuantity() + 1;
-            product.setQuantity(newQuantity);
-        } else {
-            Product currentProduct = productService.getProductById(id).get();
-            Product product = new Product();
-            product = productService.getProductById(id).get();
-            cid = product.getCategory().getCid();
-            product.setQuantity(1);
-            GlobalData.cart.add(product);
-        }
-        return "redirect:/shopPage/" + cid;
-    }
-
     @GetMapping("/getSize")
     @ResponseBody
     public List<String> getSize(@RequestParam int pid) {
