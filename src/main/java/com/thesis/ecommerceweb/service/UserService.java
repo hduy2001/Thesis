@@ -2,6 +2,7 @@ package com.thesis.ecommerceweb.service;
 
 import com.thesis.ecommerceweb.dto.UserDTO;
 import com.thesis.ecommerceweb.model.User;
+import jakarta.mail.MessagingException;
 
 public interface UserService {
     User updateUser(UserDTO userDTO);
@@ -19,6 +20,8 @@ public interface UserService {
     User updatePassword(String username, String confirmPassword);
 
     void sendEmailGetPassword(String email, String path);
+
+    void sendInvoice(String username, int oid) throws MessagingException;
 
     int countAllUser();
 }

@@ -32,4 +32,5 @@ public class OrderService {
     public List<Order> getAllOrderByUsername(String username, String status) {
         return orderRepository.findAllByUsernameAndStatus(username, status);
     }
+
 }

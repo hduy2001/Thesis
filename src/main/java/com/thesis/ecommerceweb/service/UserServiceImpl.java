@@ -3,12 +3,22 @@ package com.thesis.ecommerceweb.service;
 import com.thesis.ecommerceweb.dto.UserDTO;
 import com.thesis.ecommerceweb.model.User;
 import com.thesis.ecommerceweb.repository.UserRepository;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.util.Properties;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -147,5 +157,62 @@ public class UserServiceImpl implements UserService{
     @Override
     public int countAllUser() {
         return userRepository.countAllByRole("USER");
+    }
+
+    @Override
+    public void sendInvoice(String username, int oid) throws MessagingException {
+        User user = userRepository.findUserByUsername(username);
+        if (user != null) {
+            String host = "smtp.gmail.com";
+            String Password = "zhyibswjtjjyandj";
+            String from = "runningstore2023@gmail.com";
+            String toAddress = user.getEmail();
+            String filename = "D:\\Thesis\\invoice\\" + username + "_" + oid + ".pdf";
+            // Get system properties
+            Properties props = System.getProperties();
+            props.put("mail.smtp.host", host);
+            props.put("mail.smtps.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            Session session = Session.getInstance(props, null);
+
+            MimeMessage message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress(from));
+
+            message.setRecipients(Message.RecipientType.TO, toAddress);
+
+            message.setSubject("JavaMail Attachment");
+
+            BodyPart messageBodyPart = new MimeBodyPart();
+
+            messageBodyPart.setText("Here's the file");
+
+            Multipart multipart = new MimeMultipart();
+
+            multipart.addBodyPart(messageBodyPart);
+
+            messageBodyPart = new MimeBodyPart();
+
+            DataSource source = new FileDataSource(filename);
+
+            messageBodyPart.setDataHandler(new DataHandler(source));
+
+            messageBodyPart.setFileName(filename);
+
+            multipart.addBodyPart(messageBodyPart);
+
+            message.setContent(multipart);
+
+            try {
+                Transport tr = session.getTransport("smtps");
+                tr.connect(host, from, Password);
+                tr.sendMessage(message, message.getAllRecipients());
+                System.out.println("Mail Sent Successfully");
+                tr.close();
+//                String path = "D:\\Thesis\\invoice\\" + username + "_" + oid + ".pdf";
+            } catch (SendFailedException sfe) {
+                System.out.println(sfe);
+            }
+        }
     }
 }

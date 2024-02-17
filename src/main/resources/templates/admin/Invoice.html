@@ -24,6 +24,7 @@
     <script th:src="@{/assets/js/jvectormap.min.js}"></script>
     <script th:src="@{/assets/js/world-merc.js}"></script>
     <script th:src="@{/assets/js/polyfill.js}"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
 </head>
 <body>
 <!-- ======== sidebar-nav start =========== -->
@@ -189,7 +190,7 @@
 
     <!-- ========== section start ========== -->
     <section>
-        <div class="container-fluid">
+        <div class="container-fluid"  id="printContent">
             <!-- ========== title-wrapper start ========== -->
             <div class="title-wrapper pt-30">
             </div>
@@ -309,20 +310,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="invoice-action">
-                                <ul class="d-flex flex-wrap align-items-center justify-content-center">
-                                    <li class="m-2">
-                                        <a href="#0" class="main-btn primary-btn-outline btn-hover">
-                                            Download Invoice
-                                        </a>
-                                    </li>
-                                    <li class="m-2">
-                                        <a href="#0" class="main-btn primary-btn btn-hover">
-                                            Send Invoice
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
                         </div>
                         <!-- End Card -->
                     </div>
@@ -333,6 +320,20 @@
             <!-- Invoice Wrapper End -->
         </div>
         <!-- end container -->
+        <div class="invoice-action">
+            <ul class="d-flex flex-wrap align-items-center justify-content-center">
+                <li class="m-2">
+                    <button type="button" id="printPDF" onclick="printPDF()" class="main-btn primary-btn-outline btn-hover">
+                        Download Invoice
+                    </button>
+                </li>
+                <li class="m-2">
+                    <button type="button" id="sendInvoiceBtn" onclick="sendEmail()" class="main-btn primary-btn btn-hover">
+                        Send Invoice
+                    </button>
+                </li>
+            </ul>
+        </div>
     </section>
     <!-- ========== section end ========== -->
 
@@ -358,5 +359,49 @@
 </main>
 <!-- ======== main-wrapper end =========== -->
 <script th:src="@{/assets/js/main.js}"></script>
+<script th:src="|https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js|"
+        integrity="sha512-cLuyDTDg9CSseBSFWNd4wkEaZ0TBEpclX0zD3D6HjI19pO39M58AgJ1SjHp6c7ZOp0/OCRcC2BCvvySU9KJaGw=="
+        crossorigin="anonymous"></script>
+
+<!-- Import html2canvas.js from CDN -->
+<script th:src="|http://html2canvas.hertzen.com/dist/html2canvas.js|"></script>
+<script th:inline="javascript">
+    function printPDF() {
+        html2canvas(document.getElementById('printContent'), {height: document.body.clientHeight, width: document.body.clientWidth}).then(function (canvas) {
+            var orderId = [[${currentOrder.oid}]];
+            var username = [[${user.username}]];
+            var wid;
+            var hgt;
+
+            var img = canvas.toDataURL("image/png", wid = canvas.width, hgt = canvas.height);
+            var hratio = hgt / wid
+            var doc = new jsPDF('p', 'pt', 'a4');
+            var width = doc.internal.pageSize.width;
+            var height = width * hratio
+            doc.addImage(img, 'JPEG', 20, 20, width, height);
+            var fileName = username + "_" + orderId + ".pdf";
+            doc.save(fileName);
+        });
+    }
+
+    function sendEmail() {
+        var orderId = [[${currentOrder.oid}]];
+        var username = [[${user.username}]];
+        $.ajax({
+            type: "GET",
+            url: "/sendInvoice",
+            data: {
+                username: username,
+                oid: orderId
+            },
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error: " + xhr.responseText);
+            }
+        });
+    }
+</script>
 </body>
 </html>

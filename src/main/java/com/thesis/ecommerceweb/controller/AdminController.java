@@ -12,6 +12,7 @@ import com.thesis.ecommerceweb.service.CategoryService;
 import com.thesis.ecommerceweb.service.OrderService;
 import com.thesis.ecommerceweb.service.ProductService;
 import com.thesis.ecommerceweb.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -297,5 +298,11 @@ public class AdminController {
     public String updateProfile(@ModelAttribute("USER") UserDTO userDTO) {
         userService.updateUser(userDTO);
         return "redirect:/admin";
+    }
+
+    @GetMapping("/sendInvoice")
+    public String sendInvoice(@RequestParam("username") String username, @RequestParam("oid") int oid) throws MessagingException {
+        userService.sendInvoice(username, oid);
+        return "Request processed successfully";
     }
 }
