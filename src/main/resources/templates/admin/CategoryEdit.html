@@ -109,7 +109,7 @@
 
             <span class="divider"><hr/></span>
 
-            <li class="nav-item">
+            <li class="nav-item" th:unless="${user.role == 'MANAGER'}">
                 <a th:href="@{/admin/addManager}">
               <span class="icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

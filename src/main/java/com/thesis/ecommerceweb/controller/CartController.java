@@ -238,7 +238,7 @@ public class CartController {
     }
 
     @PostMapping("/editDelivery")
-    public String editDelivery(@ModelAttribute("USER") UserDTO userDTO, @RequestParam("paymentMethod") String paymentMethod, Order order, Principal principal) {
+    public String editDelivery(@ModelAttribute("USER") UserDTO userDTO, @RequestParam("paymentMethod") String paymentMethod, Order order, Principal principal, HttpServletRequest request) {
         if (paymentMethod.equals("COD")) {
             order.setUsername(principal.getName());
             order.setDetail(GlobalData.orderName);
@@ -252,7 +252,10 @@ public class CartController {
             cartService.markAndRemoveCompleteCarts(userCarts);
             return "/web/CodNotice";
         }
-        return "/web/ordersuccess";
+        String orderInfo = "Running store";
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String vnpayUrl = vnPayService.createOrder(total + 15000, orderInfo, baseUrl);
+        return "redirect:" + vnpayUrl;
     }
 
 //    @GetMapping("/checkoutCod")
