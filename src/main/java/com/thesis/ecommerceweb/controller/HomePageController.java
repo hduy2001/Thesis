@@ -187,7 +187,10 @@ public class HomePageController {
 
     //Login Section:
     @GetMapping("/login")
-    public String showLogin(){
+    public String showLogin(@RequestParam(name = "error", required = false) String error, Model model){
+        if (error != null) {
+            model.addAttribute("ERROR", "Invalid username or password");
+        }
         return "web/Login";
     }
 

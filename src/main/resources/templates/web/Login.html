@@ -39,6 +39,7 @@
         <div class="col-sm-12">
             <h3>Login</h3>
             <form action="/login" method="post">
+                <p style="font-size: 16px; text-align: center; color: red" th:text="${ERROR}"></p>
                 <div class="form-group">
                     <label>Username</label>
                     <input type="text" class="form-control" name="username" placeholder="Enter username">
@@ -50,7 +51,6 @@
                 <div class="checkbox" style="padding-bottom: 10px;">
                     <a href="#" data-toggle="modal" data-target="#exampleModalCenter">Forgot Password?</a>
                 </div>
-                <p style="color: red" th:text="${ERROR}"></p>
                 <button type="submit" class="btn btn-primary">Login</button>
                 <p style="font-size: 16px;">Don't have an account? <a th:href="@{/register}">Register here!</a></p>
             </form>

@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
 
                 .formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login")
-                        .successHandler(customSuccessHandler).permitAll())
+                        .successHandler(customSuccessHandler) .failureUrl("/login?error").permitAll())
 
                 .logout(form -> form.invalidateHttpSession(true).clearAuthentication(true)
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

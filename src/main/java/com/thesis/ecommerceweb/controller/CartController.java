@@ -259,13 +259,6 @@ public class CartController {
     }
 
     //Checkout online
-    @GetMapping("/checkoutOnline")
-    public String submitOrder(HttpServletRequest request){
-        String orderInfo = "Running store";
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(total + 15000, orderInfo, baseUrl);
-        return "redirect:" + vnpayUrl;
-    }
 
     @GetMapping("/vnpay-payment")
     public String GetMapping(HttpServletRequest request, Order order, Principal principal){
@@ -278,6 +271,8 @@ public class CartController {
         order.setPayType("Online");
 
         if (paymentStatus == 1) {
+            List<Cart> userCarts = cartService.findAllCartByUsername(principal.getName());
+            cartService.markAndRemoveCompleteCarts(userCarts);
             order.setStatus("Ordered");
             order.setIsPay(1);
             orderService.addOrder(order);
