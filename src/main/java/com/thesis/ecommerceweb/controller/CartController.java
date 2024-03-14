@@ -254,23 +254,9 @@ public class CartController {
         }
         String orderInfo = "Running store";
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(total + 15000, orderInfo, baseUrl);
+        String vnpayUrl = vnPayService.createOrder(newTotal, orderInfo, baseUrl);
         return "redirect:" + vnpayUrl;
     }
-
-//    @GetMapping("/checkoutCod")
-//    public String checkoutCod(Order order, Principal principal) {
-//        order.setUsername(principal.getName());
-//        order.setDetail(GlobalData.orderName);
-//        order.setQuantity(totalQuantity);
-//        order.setTotalPrice(newTotal);
-//        order.setPayType("COD");
-//        order.setStatus("Ordered");
-//        order.setIsPay(0);
-//        orderService.addOrder(order);
-//        totalQuantity = 0;
-//        return "/web/CodNotice";
-//    }
 
     //Checkout online
     @GetMapping("/checkoutOnline")
@@ -282,30 +268,26 @@ public class CartController {
     }
 
     @GetMapping("/vnpay-payment")
-    public String GetMapping(HttpServletRequest request, Order order){
+    public String GetMapping(HttpServletRequest request, Order order, Principal principal){
         int paymentStatus = vnPayService.orderReturn(request);
-//        String orderInfo = request.getParameter("vnp_OrderInfo");
-//        String paymentTime = request.getParameter("vnp_PayDate");
-//        String transactionId = request.getParameter("vnp_TransactionNo");
-//        String totalPrice = request.getParameter("vnp_Amount");
-//
-//        model.addAttribute("orderId", orderInfo);
-//        model.addAttribute("totalPrice", totalPrice);
-//        model.addAttribute("paymentTime", paymentTime);
-//        model.addAttribute("transactionId", transactionId);
-        order.setUsername(GlobalData.RememberUser);
+
+        order.setUsername(principal.getName());
+        order.setDetail(GlobalData.orderName);
         order.setQuantity(totalQuantity);
         order.setTotalPrice(newTotal);
         order.setPayType("Online");
-        order.setStatus("Delivering");
+
         if (paymentStatus == 1) {
+            order.setStatus("Ordered");
             order.setIsPay(1);
             orderService.addOrder(order);
             totalQuantity = 0;
-            return "/web/ordersuccess";
+            return "/web/PaymentSuccess";
         }
+
+        order.setStatus("Pending");
         order.setIsPay(0);
         orderService.addOrder(order);
-        return "/web/orderfail";
+        return "/web/PaymentFail";
     }
 }
